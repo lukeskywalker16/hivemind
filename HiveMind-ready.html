@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hivemind — Live Brainstorm</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --surface2: #1c1c27;
+      --border: #2a2a3a;
+      --accent: #7c6aff;
+      --accent2: #ff6a9a;
+      --accent3: #6affcb;
+      --text: #f0f0f8;
+      --muted: #6b6b88;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAV */
+    nav {
+      padding: 1.2rem 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-dot {
+      width: 8px; height: 8px;
+      background: var(--accent3);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    /* SCREENS */
+    .screen { display: none; flex: 1; }
+    .screen.active { display: flex; }
+
+    /* LANDING */
+    #landing {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    #landing h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      line-height: 1.1;
+    }
+
+    #landing h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    #landing p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 480px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      padding: 0.8rem 1.8rem;
+      border-radius: var(--radius);
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover { background: #6a58e8; transform: translateY(-1px); }
+
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+    .btn-accent2 {
+      background: var(--accent2);
+      color: white;
+    }
+
+    .btn-accent2:hover { background: #e85585; transform: translateY(-1px); }
+
+    /* FORMS */
+    .form-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-card h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.8rem 1rem;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      resize: none;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    input::placeholder, textarea::placeholder { color: var(--muted); }
+
+    label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 0.3rem; }
+
+    /* HOST VIEW */
+    #host-view {
+      flex-direction: column;
+      padding: 1.5rem 2rem;
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .host-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .room-code-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.6rem 1.2rem;
+    }
+
+    .room-code-badge span {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      color: var(--accent3);
+    }
+
+    .copy-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.3rem 0.8rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover { color: var(--text); border-color: var(--accent); }
+
+    .question-display {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.5rem;
+    }
+
+    .question-display p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+    }
+
+    .question-display h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    /* CLUSTER GRID */
+    .clusters-section h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+
+    .clusters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .cluster-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .cluster-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .cluster-responses {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .response-tag {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text);
+    }
+
+    /* AI INSIGHT */
+    .ai-insight {
+      background: linear-gradient(135deg, rgba(124,106,255,0.1), rgba(255,106,154,0.1));
+      border: 1px solid rgba(124,106,255,0.3);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .ai-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .ai-insight p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .ai-insight .ai-label {
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.3rem;
+    }
+
+    /* STATS */
+    .stats-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .stat-chip strong {
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+    }
+
+    /* PARTICIPANT VIEW */
+    #participant-view {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      gap: 1.5rem;
+    }
+
+    .submitted-list {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .submitted-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.7rem 1rem;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .submitted-item::before {
+      content: '✓';
+      color: var(--accent3);
+      font-weight: 700;
+    }
+
+    /* WAITING */
+    .waiting {
+      text-align: center;
+      color: var(--muted);
+      padding: 2rem;
+    }
+
+    .waiting .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.8rem 1.5rem;
+      font-size: 0.9rem;
+      transition: transform 0.3s ease;
+      z-index: 999;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* UTIL */
+    .center-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    .error-msg {
+      color: var(--accent2);
+      font-size: 0.85rem;
+      display: none;
+    }
+
+    .divider {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      position: relative;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Hivemind</div>
+  <div class="logo-dot"></div>
+</nav>
+
+<!-- LANDING -->
+<div id="landing" class="screen active">
+  <h1>Ideas are better<br/><span>together.</span></h1>
+  <p>Run live brainstorms where AI clusters responses and surfaces insights in real-time.</p>
+  <div class="btn-group">
+    <button class="btn btn-primary" onclick="showScreen('create-room')">Host a Session</button>
+    <button class="btn btn-secondary" onclick="showScreen('join-room')">Join a Session</button>
+  </div>
+</div>
+
+<!-- CREATE ROOM -->
+<div id="create-room" class="screen center-wrap">
+  <div class="form-card">
+    <h2>Create a Session</h2>
+    <div class="field">
+      <label>Your question for participants</label>
+      <textarea id="host-question" rows="3" placeholder="e.g. What challenges does your team face day-to-day?"></textarea>
+    </div>
+    <div id="create-error" class="error-msg">Please enter a question.</div>
+    <button class="btn btn-primary" onclick="createRoom()">Create Room →</button>
+    <button class="btn btn-secondary" onclick="showScreen('landing')">← Back</button>
+  </div>
+</div>
+
+<!-- JOIN ROOM -->
+<div id="join-room" class="screen center-wrap">
+  <div class="form-card">
+    <h2>Join a Session</h2>
+    <div class="field">
+      <label>Room code</label>
+      <input id="join-code" type="text" placeholder="e.g. ABC123" maxlength="6" style="text-transform:uppercase;letter-spacing:0.1em;font-family:'Syne',sans-serif;font-size:1.2rem;"/>
+    </div>
+    <div id="join-error" class="error-msg">Room not found. Check the code and try again.</div>
+    <button class="btn btn-primary" onclick="joinRoom()">Join →</button>
+    <button class="btn btn-secondary" onclick="showScreen('landing')">← Back</button>
+  </div>
+</div>
+
+<!-- HOST VIEW -->
+<div id="host-view" class="screen">
+  <div class="host-header">
+    <div>
+      <div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem;">LIVE SESSION</div>
+      <div class="room-code-badge">
+        <div style="font-size:0.8rem;color:var(--muted);">Room code</div>
+        <span id="display-code">—</span>
+        <button class="copy-btn" onclick="copyCode()">Copy link</button>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-chip"><strong id="response-count">0</strong> responses</div>
+      <div class="stat-chip"><strong id="cluster-count">0</strong> clusters</div>
+    </div>
+  </div>
+
+  <div class="question-display">
+    <p>QUESTION</p>
+    <h2 id="display-question">—</h2>
+  </div>
+
+  <div id="ai-insight-box" style="display:none;" class="ai-insight">
+    <div class="ai-icon">🧠</div>
+    <div>
+      <div class="ai-label">AI Insight</div>
+      <p id="ai-insight-text"></p>
+    </div>
+  </div>
+
+  <div class="clusters-section">
+    <h3>Live Clusters</h3>
+    <div id="clusters-grid" class="clusters-grid">
+      <div class="waiting">
+        <div class="spinner"></div>
+        <p>Waiting for responses...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PARTICIPANT VIEW -->
+<div id="participant-view" class="screen">
+  <div class="form-card" style="max-width:480px;">
+    <h2 id="participant-question">Loading question...</h2>
+    <div class="field">
+      <label>Your idea or response</label>
+      <input id="response-input" type="text" placeholder="Type your idea here..." maxlength="200"/>
+    </div>
+    <button class="btn btn-primary" onclick="submitResponse()">Submit Idea →</button>
+  </div>
+  <div class="submitted-list" id="submitted-list"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ============================================
+  // === YOUR KEYS — PASTE YOUR VALUES BELOW ===
+  // ============================================
+  const SUPABASE_URL = "https://nxqikfmnyqdaefwjywuv.supabase.co"
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54cWlrZm1ueXFkYWVmd2p5d3V2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyOTkxMjQsImV4cCI6MjA5NTg3NTEyNH0.j7xSDDGedMtDqtgglyAQabV34Nj5LWkZwfHTLBaUVSw"
+  const ANTHROPIC_KEY = "sk-ant-api03-muWep_W5GWrE7YSpDKXUBUOQwVvAZp5QO3VUHzfeaIpKp61JLPTffnLMktsEdI2KfpbL7wRpH6AlMq8bKSlnlg-Xm_2uAAA"
+  // ============================================
+
+  const { createClient } = supabase
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+  let currentRoom = null
+  let allResponses = []
+  let clusterTimeout = null
+
+  // ---- NAVIGATION ----
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
+    document.getElementById(id).classList.add('active')
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast')
+    t.textContent = msg
+    t.classList.add('show')
+    setTimeout(() => t.classList.remove('show'), 2500)
+  }
+
+  // ---- HOST: CREATE ROOM ----
+  async function createRoom() {
+    const question = document.getElementById('host-question').value.trim()
+    const errEl = document.getElementById('create-error')
+    if (!question) { errEl.style.display = 'block'; return; }
+    errEl.style.display = 'none'
+
+    const code = Math.random().toString(36).substring(2, 8).toUpperCase()
+
+    const { data, error } = await db.from('rooms').insert({ code, question }).select().single()
+    if (error) { alert('Error creating room: ' + error.message); return; }
+
+    currentRoom = data
+    document.getElementById('display-code').textContent = code
+    document.getElementById('display-question').textContent = question
+    showScreen('host-view')
+    startListening(data.id)
+  }
+
+  function copyCode() {
+    const code = currentRoom?.code
+    if (!code) return
+    const url = `${window.location.href.split('?')[0]}?join=${code}`
+    navigator.clipboard.writeText(url)
+    showToast('Link copied! Share it with participants.')
+  }
+
+  // ---- REALTIME LISTENER ----
+  function startListening(roomId) {
+    db.channel('responses-' + roomId)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'responses',
+        filter: `room_id=eq.${roomId}`
+      }, payload => {
+        allResponses.push(payload.new)
+        updateStats()
+        scheduleClustering()
+      })
+      .subscribe()
+  }
+
+  function updateStats() {
+    document.getElementById('response-count').textContent = allResponses.length
+  }
+
+  // ---- CLUSTERING (debounced) ----
+  function scheduleClustering() {
+    clearTimeout(clusterTimeout)
+    clusterTimeout = setTimeout(() => runClustering(), 2500)
+  }
+
+  async function runClustering() {
+    if (allResponses.length === 0) return
+
+    const responseTexts = allResponses.map(r => r.content).join('\n')
+
+    const prompt = `You are analysing brainstorm responses in real-time. Here are the current responses:
+
+${responseTexts}
+
+Group these into clusters of similar ideas. For each cluster:
+1. Give it a short label (2-4 words max)
+2. List which responses belong to it
+
+Also write a single sentence insight summarising the overall themes.
+
+Respond ONLY in this exact JSON format:
+{
+  "clusters": [
+    { "label": "cluster name", "items": ["response 1", "response 2"] }
+  ],
+  "insight": "One sentence summary of the overall themes."
+}`
+
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": ANTHROPIC_KEY,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-client-side-access-key": "true"
+        },
+        body: JSON.stringify({
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 1000,
+          messages: [{ role: "user", content: prompt }]
+        })
+      })
+
+      const data = await res.json()
+      const text = data.content?.[0]?.text || ""
+      const clean = text.replace(/```json|```/g, "").trim()
+      const parsed = JSON.parse(clean)
+      renderClusters(parsed)
+    } catch (e) {
+      console.error("Clustering error:", e)
+    }
+  }
+
+  function renderClusters(data) {
+    const grid = document.getElementById('clusters-grid')
+    grid.innerHTML = ""
+
+    data.clusters.forEach(cluster => {
+      const card = document.createElement('div')
+      card.className = 'cluster-card'
+      card.innerHTML = `
+        <div class="cluster-label">${cluster.label}</div>
+        <div class="cluster-responses">
+          ${cluster.items.map(i => `<span class="response-tag">${i}</span>`).join('')}
+        </div>
+      `
+      grid.appendChild(card)
+    })
+
+    document.getElementById('cluster-count').textContent = data.clusters.length
+
+    if (data.insight) {
+      document.getElementById('ai-insight-text').textContent = data.insight
+      document.getElementById('ai-insight-box').style.display = 'flex'
+    }
+  }
+
+  // ---- PARTICIPANT: JOIN ROOM ----
+  async function joinRoom() {
+    const code = document.getElementById('join-code').value.trim().toUpperCase()
+    const errEl = document.getElementById('join-error')
+    if (!code) return
+
+    const { data, error } = await db.from('rooms').select().eq('code', code).single()
+    if (error || !data) { errEl.style.display = 'block'; return; }
+
+    errEl.style.display = 'none'
+    currentRoom = data
+    document.getElementById('participant-question').textContent = data.question
+    showScreen('participant-view')
+  }
+
+  // Handle ?join=CODE in URL
+  window.addEventListener('load', () => {
+    const params = new URLSearchParams(window.location.search)
+    const code = params.get('join')
+    if (code) {
+      document.getElementById('join-code').value = code
+      joinRoom()
+    }
+  })
+
+  // ---- PARTICIPANT: SUBMIT ----
+  async function submitResponse() {
+    const input = document.getElementById('response-input')
+    const content = input.value.trim()
+    if (!content || !currentRoom) return
+
+    const { error } = await db.from('responses').insert({
+      room_id: currentRoom.id,
+      content
+    })
+
+    if (error) { showToast('Error submitting. Try again.'); return; }
+
+    const list = document.getElementById('submitted-list')
+    const item = document.createElement('div')
+    item.className = 'submitted-item'
+    item.textContent = content
+    list.prepend(item)
+
+    input.value = ''
+    showToast('Idea submitted! ✓')
+  }
+
+  // Submit on Enter
+  document.getElementById('response-input')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') submitResponse()
+  })
+  document.getElementById('join-code')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') joinRoom()
+  })
+</script>
+</body>
+</html>
