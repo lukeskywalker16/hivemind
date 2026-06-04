@@ -1194,11 +1194,11 @@
     document.getElementById('response-feed').innerHTML = ''
     renderSlideNav()
 
-    // Update Supabase room with current slide index
+   // Update Supabase room with current slide index
     if (currentRoom) {
-      db.from('rooms').update({ question: JSON.stringify({ title: '', slides, currentSlide: currentSlideIndex }) }).eq('id', currentRoom.id)
+      const title = document.getElementById('session-title')?.value || ''
+      await db.from('rooms').update({ question: JSON.stringify({ title, slides, currentSlide: currentSlideIndex }) }).eq('id', currentRoom.id)
     }
-  }
 
   function goToSlide(index) {
     currentSlideIndex = index
