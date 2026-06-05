@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AgoraAI — Your ideas, AI powered</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #080810;
+      --surface: #0f0f1a;
+      --surface2: #171726;
+      --border: #252538;
+      --accent: #7c6aff;
+      --accent2: #ff6a9a;
+      --accent3: #6affcb;
+      --accent4: #ffcb6a;
+      --text: #eeeef8;
+      --muted: #5a5a7a;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+    /* INTRO */
+    #intro { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; gap: 1rem; animation: introFade 3.5s ease forwards; pointer-events: none; }
+    @keyframes introFade { 0%, 60% { opacity: 1; } 100% { opacity: 0; } }
+    .intro-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(4rem, 15vw, 9rem); letter-spacing: 0.02em; background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, var(--accent2) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: logoReveal 1s cubic-bezier(0.16,1,0.3,1) forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes logoReveal { to { opacity: 1; transform: translateY(0); } }
+    .intro-tagline { font-size: 0.9rem; font-weight: 300; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); animation: taglineReveal 1s 0.4s forwards; opacity: 0; }
+    @keyframes taglineReveal { to { opacity: 1; } }
+
+    /* APP */
+    #app { min-height: 100vh; display: flex; flex-direction: column; opacity: 0; animation: appReveal 0.8s 3s ease forwards; }
+    @keyframes appReveal { to { opacity: 1; } }
+
+    /* NAV */
+    nav { padding: 1rem 2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--bg); z-index: 100; }
+    .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.02em; background: linear-gradient(135deg, #fff, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer; transition: opacity 0.2s; }
+    .nav-logo:hover { opacity: 0.8; }
+    .nav-dot { display: inline-block; width: 6px; height: 6px; background: var(--accent3); border-radius: 50%; margin-left: 3px; vertical-align: middle; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(106,255,203,0.5); } 50% { box-shadow: 0 0 0 5px rgba(106,255,203,0); } }
+    .nav-right { display: flex; gap: 0.5rem; align-items: center; }
+
+    /* SCREENS */
+    .screen { display: none; flex: 1; flex-direction: column; }
+    .screen.active { display: flex; }
+
+    /* HOME TABS */
+    #home { flex-direction: column; }
+    .home-tabs { display: flex; border-bottom: 1px solid var(--border); padding: 0 2rem; overflow-x: auto; background: var(--bg); }
+    .home-tab { padding: 0.9rem 1.25rem; font-size: 0.88rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; background: none; border-top: none; border-left: none; border-right: none; font-family: 'DM Sans', sans-serif; }
+    .home-tab:hover { color: var(--text); }
+    .home-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-panel { display: none; flex: 1; flex-direction: column; }
+    .tab-panel.active { display: flex; }
+
+    /* MAIN TAB */
+    #tab-main { align-items: center; justify-content: center; gap: 2.5rem; padding: 3rem 2rem; text-align: center; position: relative; }
+    #tab-main::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 700px; height: 500px; background: radial-gradient(ellipse, rgba(124,106,255,0.07) 0%, transparent 70%); pointer-events: none; }
+    .home-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 12vw, 7rem); letter-spacing: 0.03em; line-height: 1; }
+    .home-title span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .home-tagline { font-size: 1rem; color: var(--muted); font-weight: 300; letter-spacing: 0.05em; margin-top: -1rem; }
+    .home-buttons { display: flex; flex-direction: column; gap: 1rem; width: 100%; max-width: 320px; }
+
+    /* ABOUT TAB */
+    .content-tab { padding: 3rem 2rem; max-width: 760px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 3rem; }
+    .content-section { display: flex; flex-direction: column; gap: 1rem; }
+    .content-eyebrow { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+    .content-heading { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 0.03em; line-height: 1.1; }
+    .content-body { font-size: 1rem; line-height: 1.8; color: var(--muted); font-weight: 300; }
+    .content-body strong { color: var(--text); font-weight: 500; }
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-top: 0.5rem; }
+    .feature-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; transition: border-color 0.2s; }
+    .feature-card:hover { border-color: rgba(124,106,255,0.3); }
+    .feature-icon { font-size: 1.5rem; }
+    .feature-title { font-weight: 600; font-size: 0.95rem; }
+    .feature-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+
+    /* HOW TO USE TAB */
+    .steps-list { display: flex; flex-direction: column; gap: 0; }
+    .step-item { display: flex; gap: 1.5rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); }
+    .step-item:last-child { border-bottom: none; }
+    .step-number { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--accent); opacity: 0.4; line-height: 1; flex-shrink: 0; width: 48px; text-align: center; }
+    .step-content { display: flex; flex-direction: column; gap: 0.3rem; padding-top: 0.3rem; }
+    .step-title { font-weight: 600; font-size: 1rem; }
+    .step-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+    .role-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .role-tab { padding: 0.5rem 1.2rem; border-radius: 20px; font-size: 0.85rem; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--muted); font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+    .role-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
+    .role-panel { display: none; }
+    .role-panel.active { display: block; }
+
+    /* FAQ TAB */
+    .faq-list { display: flex; flex-direction: column; gap: 0; }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-question { padding: 1.25rem 0; display: flex; align-items: center; justify-content: space-between; cursor: pointer; font-weight: 500; font-size: 0.95rem; gap: 1rem; }
+    .faq-question:hover { color: var(--accent); }
+    .faq-chevron { color: var(--muted); font-size: 1rem; transition: transform 0.2s; flex-shrink: 0; }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+    .faq-answer { font-size: 0.9rem; color: var(--muted); line-height: 1.7; padding-bottom: 1.25rem; display: none; }
+    .faq-item.open .faq-answer { display: block; }
+
+    /* BUTTONS */
+    .btn { padding: 1rem 2rem; border-radius: var(--radius); border: none; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.25s; letter-spacing: 0.02em; }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { background: #6a58e8; transform: translateY(-2px); box-shadow: 0 0 24px 6px rgba(124,106,255,0.4), 0 0 60px 12px rgba(124,106,255,0.15); }
+    .btn-primary:active { transform: translateY(0); box-shadow: 0 0 35px 8px rgba(124,106,255,0.55); }
+    .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 0 16px 3px rgba(124,106,255,0.2); }
+    .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 0.6rem 1.2rem; font-size: 0.88rem; }
+    .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+    .btn-glow-green { background: transparent; color: var(--accent3); border: 1px solid rgba(106,255,203,0.3); padding: 0.6rem 1.4rem; font-size: 0.88rem; }
+    .btn-glow-green:hover { background: rgba(106,255,203,0.08); box-shadow: 0 0 18px 3px rgba(106,255,203,0.25); border-color: var(--accent3); }
+    .btn-glow-pink { background: transparent; color: var(--accent2); border: 1px solid rgba(255,106,154,0.3); padding: 0.6rem 1.4rem; font-size: 0.88rem; }
+    .btn-glow-pink:hover { background: rgba(255,106,154,0.08); box-shadow: 0 0 18px 3px rgba(255,106,154,0.25); border-color: var(--accent2); }
+    .btn-sm { padding: 0.55rem 1.1rem; font-size: 0.85rem; }
+    .btn-full { width: 100%; }
+    .btn-copy { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.25rem 0.75rem; color: var(--muted); font-size: 0.78rem; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+    .btn-copy:hover { color: var(--text); border-color: var(--accent); box-shadow: 0 0 8px rgba(124,106,255,0.2); }
+
+    /* FORMS */
+    .form-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; padding: 2rem; gap: 1.5rem; }
+    .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 2rem; width: 100%; max-width: 520px; display: flex; flex-direction: column; gap: 1.2rem; }
+    .form-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.04em; }
+    .field { display: flex; flex-direction: column; gap: 0.4rem; }
+    label { font-size: 0.75rem; color: var(--muted); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+    input, textarea, select { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.85rem 1rem; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; transition: border-color 0.2s, box-shadow 0.2s; resize: none; }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,106,255,0.12); }
+    input::placeholder, textarea::placeholder { color: var(--muted); }
+    select option { background: var(--surface2); }
+    .error-msg { color: var(--accent2); font-size: 0.85rem; display: none; }
+
+    /* SLIDE BUILDER */
+    .slide-builder { display: flex; flex-direction: column; gap: 0.75rem; }
+    .slide-item { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; animation: fadeUp 0.3s ease; }
+    .slide-item-header { display: flex; align-items: center; justify-content: space-between; }
+    .slide-num-badge { font-size: 0.72rem; color: var(--accent); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+    .add-slide-btn { display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: transparent; border: 1px dashed var(--border); border-radius: var(--radius); padding: 0.7rem; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; width: 100%; }
+    .add-slide-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* HOST VIEW */
+    #host-view { display: none; flex-direction: column; min-height: calc(100vh - 57px); }
+    #host-view.active { display: flex; }
+    .slide-display { flex: 1; display: flex; flex-direction: column; padding: 1.5rem 2rem; gap: 1.5rem; padding-bottom: 110px; }
+    .progress-bar-wrap { display: flex; align-items: center; gap: 0.75rem; }
+    .progress-bar { flex: 1; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; transition: width 0.5s ease; }
+    .progress-label { font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
+    .slide-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .slide-meta { flex: 1; }
+    .slide-eyebrow { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 0.3rem; }
+    .slide-question-text { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.8rem, 4vw, 3rem); letter-spacing: 0.03em; line-height: 1.15; }
+    .slide-controls { display: flex; gap: 0.6rem; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
+
+    /* INSIGHTS DASHBOARD */
+    .insights-dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 900px) { .insights-dashboard { grid-template-columns: 1fr; } }
+    .insight-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; animation: fadeUp 0.4s ease; }
+    .insight-panel.wide { grid-column: 1 / -1; }
+    .insight-panel.highlight { border-color: rgba(124,106,255,0.3); background: linear-gradient(135deg, rgba(124,106,255,0.06), var(--surface)); }
+    .insight-panel-header { display: flex; align-items: center; justify-content: space-between; }
+    .insight-panel-title { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+    .insight-panel-badge { font-size: 0.68rem; background: rgba(124,106,255,0.15); color: var(--accent); border: 1px solid rgba(124,106,255,0.25); border-radius: 10px; padding: 0.15rem 0.5rem; letter-spacing: 0.05em; }
+
+    /* AI SYNTHESIS PANEL */
+    .ai-synthesis-text { font-size: 1rem; line-height: 1.75; color: var(--text); font-weight: 300; opacity: 0; transition: opacity 0.8s ease; }
+    .ai-synthesis-text.visible { opacity: 1; }
+    .ai-thinking { display: flex; align-items: center; gap: 0.6rem; color: var(--muted); font-size: 0.88rem; }
+    .thinking-dots span { animation: blink 1.2s infinite; display: inline-block; }
+    .thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
+
+    /* CLUSTERS */
+    .clusters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; }
+    .cluster-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; animation: fadeUp 0.4s ease; transition: border-color 0.2s; }
+    .cluster-card:hover { border-color: rgba(124,106,255,0.3); }
+    .cluster-card.top { border-color: rgba(124,106,255,0.35); background: linear-gradient(135deg, rgba(124,106,255,0.06), var(--surface2)); }
+    .cluster-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; }
+    .cluster-name { font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; letter-spacing: 0.06em; color: var(--accent); }
+    .cluster-card.top .cluster-name { color: #a594ff; }
+    .cluster-count-badge { font-size: 0.7rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.1rem 0.45rem; color: var(--muted); }
+    .cluster-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .response-tag { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 0.2rem 0.55rem; font-size: 0.78rem; color: var(--text); }
+    .cluster-insight-text { margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--muted); line-height: 1.5; font-style: italic; }
+
+    /* SENTIMENT BARS */
+    .sentiment-bars { display: flex; flex-direction: column; gap: 0.6rem; }
+    .sentiment-row { display: flex; align-items: center; gap: 0.75rem; }
+    .sentiment-label { font-size: 0.82rem; color: var(--text); min-width: 80px; }
+    .sentiment-track { flex: 1; height: 20px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+    .sentiment-fill { height: 100%; border-radius: 4px; transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
+    .sentiment-count { font-size: 0.78rem; color: var(--muted); min-width: 30px; text-align: right; }
+
+    /* CHART */
+    .chart-wrap { display: flex; flex-direction: column; gap: 0.5rem; }
+    .chart-bar-row { display: flex; align-items: center; gap: 0.75rem; animation: fadeUp 0.4s ease both; }
+    .chart-bar-label { font-size: 0.82rem; color: var(--text); min-width: 130px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chart-bar-track { flex: 1; height: 24px; background: var(--surface2); border-radius: 5px; overflow: hidden; }
+    .chart-bar-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.8s cubic-bezier(0.16,1,0.3,1); display: flex; align-items: center; padding-left: 0.5rem; min-width: 2px; }
+    .chart-bar-count { font-size: 0.72rem; color: white; font-weight: 600; }
+
+    /* STANDOUT */
+    .standout-quote { font-size: 1rem; line-height: 1.65; color: var(--text); font-weight: 300; font-style: italic; padding-left: 1rem; border-left: 2px solid var(--accent); opacity: 0; transition: opacity 0.8s ease; }
+    .standout-quote.visible { opacity: 1; }
+
+    /* WAITING */
+    .waiting-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; padding: 2rem; text-align: center; color: var(--muted); }
+    .spinner { width: 24px; height: 24px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .count-bump { animation: bump 0.3s ease; }
+    @keyframes bump { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); color: var(--accent3); } }
+
+    /* BOTTOM BAR */
+    .host-bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(8,8,16,0.96); backdrop-filter: blur(12px); border-top: 1px solid var(--border); padding: 0.75rem 2rem; display: flex; align-items: center; justify-content: space-between; z-index: 50; gap: 1rem; flex-wrap: wrap; }
+    .room-code-display { display: flex; align-items: center; gap: 0.75rem; }
+    .live-indicator { display: flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent3); font-weight: 600; }
+    .live-dot { width: 7px; height: 7px; background: var(--accent3); border-radius: 50%; animation: pulse 2s infinite; }
+    .big-code { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.15em; color: white; }
+    .bottom-bar-right { display: flex; align-items: center; gap: 0.75rem; }
+    .stat-pill { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 0.35rem 0.9rem; font-size: 0.82rem; color: var(--muted); }
+    .stat-pill strong { color: var(--text); font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; }
+
+    /* QR */
+    .qr-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.25rem 0.75rem; color: var(--muted); font-size: 0.78rem; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+    .qr-btn:hover { color: var(--text); border-color: var(--accent); box-shadow: 0 0 8px rgba(124,106,255,0.2); }
+    .qr-modal { display: none; position: fixed; inset: 0; background: rgba(8,8,16,0.92); z-index: 300; align-items: center; justify-content: center; }
+    .qr-modal.visible { display: flex; animation: fadeUp 0.3s ease; }
+    .qr-card { background: white; border-radius: 20px; padding: 2rem; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+    .qr-card p { color: #666; font-size: 0.82rem; text-align: center; }
+    .qr-code-text { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; letter-spacing: 0.2em; color: #111; }
+    .qr-close { background: #f0f0f0; border: none; border-radius: 8px; padding: 0.5rem 1.2rem; cursor: pointer; font-family: 'DM Sans', sans-serif; color: #333; font-size: 0.88rem; }
+
+    /* PARTICIPANT */
+    #participant-view { align-items: center; justify-content: center; padding: 2rem; gap: 1.25rem; min-height: calc(100vh - 57px); }
+    .participant-slide-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 2rem; width: 100%; max-width: 500px; text-align: center; }
+    .p-progress { display: flex; gap: 0.35rem; margin-bottom: 1rem; justify-content: center; }
+    .p-progress-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.3s; }
+    .p-progress-dot.active { background: var(--accent); }
+    .p-progress-dot.done { background: var(--accent3); }
+    .p-slide-indicator { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 0.75rem; }
+    .p-question { font-family: 'Bebas Neue', sans-serif; font-size: 1.7rem; letter-spacing: 0.03em; line-height: 1.2; margin-bottom: 0.5rem; }
+    .p-question-type { font-size: 0.82rem; color: var(--muted); font-weight: 300; }
+    .submitted-list { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 0.45rem; }
+    .submitted-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.65rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; animation: fadeUp 0.3s ease; }
+    .submitted-item::before { content: '✓'; color: var(--accent3); font-weight: 700; flex-shrink: 0; }
+
+    /* FINAL SUMMARY */
+    .final-summary-overlay { display: none; position: fixed; inset: 0; background: rgba(8,8,16,0.97); z-index: 200; align-items: center; justify-content: center; padding: 2rem; }
+    .final-summary-overlay.visible { display: flex; animation: fadeUp 0.5s ease; }
+    .final-summary-card { background: var(--surface); border: 1px solid rgba(124,106,255,0.3); border-radius: 20px; padding: 2.5rem; max-width: 700px; width: 100%; display: flex; flex-direction: column; gap: 1.5rem; max-height: 85vh; overflow-y: auto; }
+    .final-summary-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.04em; background: linear-gradient(135deg, #fff, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .final-summary-text { font-size: 1rem; line-height: 1.75; color: var(--text); font-weight: 300; }
+    .summary-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+    /* HISTORY */
+    .history-section { padding: 2rem; max-width: 700px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 1rem; }
+    .history-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.04em; }
+    .history-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; transition: all 0.2s; }
+    .history-item:hover { border-color: var(--accent); box-shadow: 0 0 15px rgba(124,106,255,0.1); }
+    .history-item-title { font-weight: 500; font-size: 0.95rem; }
+    .history-item-date { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+    .history-empty { text-align: center; color: var(--muted); padding: 3rem; }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.7rem 1.4rem; font-size: 0.88rem; transition: transform 0.3s ease; z-index: 999; white-space: nowrap; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 600px) {
+      .slide-display { padding: 1.25rem; padding-bottom: 110px; }
+      .slide-question-text { font-size: 1.6rem; }
+      .host-bottom-bar { padding: 0.75rem 1.25rem; }
+      .big-code { font-size: 1.5rem; }
+      .content-tab { padding: 2rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="intro">
+  <div class="intro-logo">AgoraAI</div>
+  <div class="intro-tagline">Your ideas, AI powered</div>
+</div>
+
+<div id="app">
+  <nav>
+    <span class="nav-logo" onclick="goHome()">AgoraAI<span class="nav-dot"></span></span>
+    <div class="nav-right">
+      <button class="btn btn-ghost btn-sm" onclick="showScreen('history')">Past Sessions</button>
+    </div>
+  </nav>
+
+  <!-- HOME -->
+  <div id="home" class="screen active">
+    <div class="home-tabs">
+      <button class="home-tab active" onclick="switchHomeTab('main', this)">Home</button>
+      <button class="home-tab" onclick="switchHomeTab('about', this)">About</button>
+      <button class="home-tab" onclick="switchHomeTab('how', this)">How to Use</button>
+      <button class="home-tab" onclick="switchHomeTab('faq', this)">FAQ</button>
+    </div>
+
+    <!-- MAIN -->
+    <div class="tab-panel active" id="tab-main">
+      <div class="home-title">Ideas are<br/><span>better together.</span></div>
+      <p class="home-tagline">Your ideas, AI powered</p>
+      <div class="home-buttons">
+        <button class="btn btn-primary btn-full" onclick="showScreen('create-room')">Host a Session</button>
+        <button class="btn btn-secondary btn-full" onclick="showScreen('join-room')">Join a Session</button>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="tab-panel" id="tab-about">
+      <div class="content-tab">
+        <div class="content-section">
+          <div class="content-eyebrow">What is AgoraAI</div>
+          <div class="content-heading">The smartest room<br/>in the building.</div>
+          <p class="content-body">
+            AgoraAI is a <strong>live co-design intelligence platform</strong> built for teams that want more from their workshops, meetings, and strategy sessions. We believe the best ideas already exist in the room — they just need the right tools to surface them.
+            <br/><br/>
+            Named after the ancient Greek agora — the public gathering place where ideas were debated, decisions were made, and communities were built — AgoraAI brings that same energy into the modern workplace, powered by AI.
+          </p>
+        </div>
+
+        <div class="content-section">
+          <div class="content-eyebrow">The Problem</div>
+          <div class="content-heading">Most workshops waste<br/>most of the room.</div>
+          <p class="content-body">
+            Traditional brainstorming tools collect input but leave the hard work — analysing, synthesising, finding patterns — to someone after the session. By then, the energy is gone and the nuance is lost.
+            <br/><br/>
+            <strong>AgoraAI changes that.</strong> As participants respond, AI works in real time to cluster similar ideas, identify dominant themes, surface standout insights, and back them with context — all while the conversation is still live.
+          </p>
+        </div>
+
+        <div class="content-section">
+          <div class="content-eyebrow">What Makes Us Different</div>
+          <div class="content-heading">Not just a word cloud.<br/>A thinking partner.</div>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-icon">🧠</div>
+              <div class="feature-title">Real-time AI Clustering</div>
+              <div class="feature-desc">Semantically groups similar responses — not just matching words, but matching meaning.</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">✦</div>
+              <div class="feature-title">Instant AI Insights</div>
+              <div class="feature-desc">Surfaces what the group is really saying — validates, challenges, and adds context automatically.</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">📊</div>
+              <div class="feature-title">Live Insights Dashboard</div>
+              <div class="feature-desc">Themes, sentiment, standout responses and AI synthesis — all updating as the room responds.</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🔗</div>
+              <div class="feature-title">Zero friction joining</div>
+              <div class="feature-desc">Participants join via a link or QR code on any device. No app, no account, no friction.</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">📝</div>
+              <div class="feature-title">Session Summary</div>
+              <div class="feature-desc">Every session ends with an AI-generated synthesis — a real deliverable you can act on.</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🚀</div>
+              <div class="feature-title">Built for scale</div>
+              <div class="feature-desc">Works equally well for a team of 5 or a conference of 500. Designed to grow with you.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <div class="content-eyebrow">The Vision</div>
+          <div class="content-heading">Every meeting should<br/>end with clarity.</div>
+          <p class="content-body">
+            We're building toward a future where every business conversation — every workshop, town hall, client session, strategy day — is backed by an AI layer that helps groups think better together. AgoraAI is the first step.
+            <br/><br/>
+            <strong>This is just the beginning.</strong> We're adding web-backed research, advanced chart types, longitudinal tracking, and integrations with the tools teams already use. If you're using AgoraAI today, you're building the product with us.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOW TO USE -->
+    <div class="tab-panel" id="tab-how">
+      <div class="content-tab">
+        <div class="content-eyebrow">How it works</div>
+        <div class="content-heading">Up and running<br/>in under 2 minutes.</div>
+
+        <div class="role-tabs">
+          <button class="role-tab active" onclick="switchRoleTab('host', this)">I'm a Host</button>
+          <button class="role-tab" onclick="switchRoleTab('participant', this)">I'm a Participant</button>
+        </div>
+
+        <div class="role-panel active" id="role-host">
+          <div class="steps-list">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <div class="step-title">Create your session</div>
+                <div class="step-desc">Click "Host a Session" and give your session a title. Add your questions — one per slide. Choose between Idea Clusters, Theme Ranking, or Sentiment for each question depending on what kind of response you want.</div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <div class="step-title">Share the room code or QR</div>
+                <div class="step-desc">Once your session launches, a 6-character room code appears at the bottom of the screen — always visible during your presentation. Share it verbally, copy the link, or show the QR code on your screen for instant joining.</div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <div class="step-title">Watch the insights build</div>
+                <div class="step-desc">As participants respond, your Insights Dashboard updates in real time. The AI automatically clusters responses, identifies top themes, and generates a synthesis — no button needed. When you're ready for deeper analysis, hit "AI Insight" for a web-backed commentary.</div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <div class="step-title">Advance through your questions</div>
+                <div class="step-desc">Use the Prev and Next buttons to move through your slides. Participants' screens update automatically — they always see the current question. No need to share new links or codes.</div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">5</div>
+              <div class="step-content">
+                <div class="step-title">End with a summary</div>
+                <div class="step-desc">When you're done, click "End Session" to receive a full AI-generated synthesis of everything discussed across all your questions. Copy it for your notes, share it with the team, or use it as a launchpad for next steps.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="role-panel" id="role-participant">
+          <div class="steps-list">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <div class="step-title">Join the session</div>
+                <div class="step-desc">Click "Join a Session" and enter the 6-character code shown by your host. Or scan the QR code if it's displayed. No account, no app download — just tap and you're in.</div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <div class="step-title">Answer honestly</div>
+                <div class="step-desc">You'll see the host's question on your screen. Type your response and hit Submit. All responses are anonymous — your name is never shown to the host or other participants. Say what you really think.</div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <div class="step-title">Follow along</div>
+                <div class="step-desc">When the host moves to the next question, your screen updates automatically. You'll see a progress indicator showing where you are in the session. You can submit multiple responses to any question.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="tab-panel" id="tab-faq">
+      <div class="content-tab">
+        <div class="content-eyebrow">FAQ</div>
+        <div class="content-heading">Common questions.</div>
+        <div class="faq-list">
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              Is AgoraAI free to use?
+              <span class="faq-chevron">▾</span>
+            </div>
+            <div class="faq-answer">AgoraAI is currently in early access and free to use. We're building the product in public and welcome feedback from early users. Pricing will be introduced as the platform grows, with a generous free tier always available for small teams.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              Do participants need to create an account?
+              <span class="faq-chevron">▾</span>
+            </div>
+            <div class="faq-answer">No. Participants join via a link or room code — no account, no app download, no friction. They just enter the code and start responding. We believe the lowest possible barrier to participation leads to the best sessions.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              Are responses anonymous?
+              <span class="faq-chevron">▾</span>
+            </div>
+            <div class="faq-answer">Yes, completely. Participant names are never collected or shown to the host. We believe anonymity leads to more honest, higher-quality responses — especially in a corporate setting where people may feel inhibited.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              How many participants can join a session?
+              <span class="faq-chevron">▾</span>
+            </div>
+            <div class="faq-answer">AgoraAI is built to scale. There's no hard cap — sessions work equally well for 5 people or 500. The AI clustering becomes more powerful with more responses, so larger groups actually produce richer insights.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              How does the AI clustering work?
+              <span class="faq-chevron">▾</span>
+            </div>
+            <div class="faq-answer">AgoraAI uses Claude (Anthropic's AI) to semantically group responses — meaning it understands meaning, not just matching words. "We need more training" and "upskilling the team is critical" would be grouped together even though they use different words.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              Can I save or export my session results?
+              <span class="faq-chevron">▾</span>
+            </div>
+            <div class="faq-answer">At the end of every session, AgoraAI generates a full AI synthesis you can copy to your clipboard. Past sessions are saved in your session history. Full export functionality (PDF, CSV) is on our roadmap.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              What kinds of sessions work best with AgoraAI?
+              <span class="faq-chevron">▾</span>
+            </div>
+            <div class="faq-answer">AgoraAI shines in any setting where you want to quickly understand what a group thinks: strategy workshops, client discovery sessions, team retrospectives, town halls, training sessions, conference panels, and stakeholder consultations. If you need to synthesise group thinking fast, AgoraAI is built for you.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              Is my data secure?
+              <span class="faq-chevron">▾</span>
+            </div>
+            <div class="faq-answer">Session data is stored securely via Supabase (PostgreSQL) with industry-standard encryption. We do not sell data to third parties. AI analysis is performed via Anthropic's API, which is subject to Anthropic's privacy and data policies.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATE ROOM -->
+  <div id="create-room" class="screen">
+    <div class="form-wrap">
+      <div class="form-card">
+        <div class="form-title">Host a Session</div>
+        <div class="field">
+          <label>Session title</label>
+          <input id="session-title" type="text" placeholder="e.g. Team Strategy Workshop"/>
+        </div>
+        <div class="field">
+          <label>Questions</label>
+          <div class="slide-builder" id="slide-builder">
+            <div class="slide-item">
+              <div class="slide-item-header">
+                <span class="slide-num-badge">Question 1</span>
+                <button class="btn btn-ghost btn-sm" onclick="removeSlide(this)">Remove</button>
+              </div>
+              <input type="text" placeholder="Ask your audience something..." class="slide-question-input"/>
+              <select class="slide-type">
+                <option value="cluster">💬 Idea Clusters</option>
+                <option value="ranking">📊 Theme Ranking</option>
+                <option value="sentiment">❤️ Sentiment</option>
+              </select>
+            </div>
+          </div>
+          <button class="add-slide-btn" onclick="addSlide()">＋ Add another question</button>
+        </div>
+        <div id="create-error" class="error-msg">Please add at least one question.</div>
+        <button class="btn btn-primary btn-full" onclick="createRoom()">Launch Session →</button>
+        <button class="btn btn-ghost btn-full" onclick="showScreen('home')">← Back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JOIN ROOM -->
+  <div id="join-room" class="screen">
+    <div class="form-wrap">
+      <div class="form-card">
+        <div class="form-title">Join a Session</div>
+        <div class="field">
+          <label>Session code</label>
+          <input id="join-code" type="text" placeholder="Enter code..." maxlength="6" style="text-transform:uppercase;letter-spacing:0.2em;font-family:'Bebas Neue',sans-serif;font-size:2rem;text-align:center;"/>
+        </div>
+        <div id="join-error" class="error-msg">Session not found. Check the code and try again.</div>
+        <button class="btn btn-primary btn-full" onclick="joinRoom()">Join →</button>
+        <button class="btn btn-ghost btn-full" onclick="showScreen('home')">← Back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOST VIEW -->
+  <div id="host-view" class="screen">
+    <div class="slide-display">
+      <div class="progress-bar-wrap">
+        <div class="progress-bar"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+        <span class="progress-label" id="progress-label">1 / 1</span>
+      </div>
+      <div class="slide-header">
+        <div class="slide-meta">
+          <div class="slide-eyebrow" id="slide-eyebrow">Question 1 of 1</div>
+          <div class="slide-question-text" id="slide-question-display">—</div>
+        </div>
+        <div class="slide-controls">
+          <button class="btn btn-ghost btn-sm" onclick="prevSlide()">← Prev</button>
+          <button class="btn btn-secondary btn-sm" onclick="nextSlide()">Next →</button>
+          <button class="btn btn-glow-pink btn-sm" onclick="endSession()">End Session</button>
+        </div>
+      </div>
+
+      <!-- INSIGHTS DASHBOARD -->
+      <div class="insights-dashboard" id="insights-dashboard" style="display:none;">
+        <!-- AI Synthesis -->
+        <div class="insight-panel wide highlight" id="panel-synthesis">
+          <div class="insight-panel-header">
+            <div class="insight-panel-title">✦ AI Synthesis</div>
+            <div class="insight-panel-badge">Auto-updating</div>
+          </div>
+          <div id="ai-thinking" class="ai-thinking">
+            <div class="spinner" style="width:16px;height:16px;"></div>
+            <span>Analysing responses<span class="thinking-dots"><span>.</span><span>.</span><span>.</span></span></span>
+          </div>
+          <div class="ai-synthesis-text" id="ai-synthesis-text"></div>
+        </div>
+
+        <!-- Clusters / Chart -->
+        <div class="insight-panel wide" id="panel-clusters">
+          <div class="insight-panel-header">
+            <div class="insight-panel-title" id="clusters-panel-title">Key Themes</div>
+            <div class="stat-pill" style="font-size:0.75rem;"><strong id="cluster-count">0</strong> clusters</div>
+          </div>
+          <div id="clusters-grid" class="clusters-grid">
+            <div class="waiting-state"><div class="spinner"></div><p style="font-size:0.85rem;">Waiting for responses...</p></div>
+          </div>
+        </div>
+
+        <!-- Sentiment -->
+        <div class="insight-panel" id="panel-sentiment">
+          <div class="insight-panel-header">
+            <div class="insight-panel-title">Sentiment</div>
+          </div>
+          <div class="sentiment-bars" id="sentiment-bars">
+            <div class="waiting-state" style="padding:1rem;"><p style="font-size:0.82rem;">Building picture...</p></div>
+          </div>
+        </div>
+
+        <!-- Standout -->
+        <div class="insight-panel" id="panel-standout">
+          <div class="insight-panel-header">
+            <div class="insight-panel-title">Standout Response</div>
+            <div class="insight-panel-badge">AI picked</div>
+          </div>
+          <blockquote class="standout-quote" id="standout-quote"></blockquote>
+        </div>
+      </div>
+
+      <div id="waiting-dashboard" class="waiting-state" style="margin-top:1rem;">
+        <div class="spinner"></div>
+        <p>Waiting for responses — insights will appear automatically</p>
+      </div>
+    </div>
+
+    <div class="host-bottom-bar">
+      <div class="room-code-display">
+        <div class="live-indicator"><div class="live-dot"></div>Live</div>
+        <div class="big-code" id="bottom-code">—</div>
+        <button class="btn-copy" onclick="copyLink()">Copy link</button>
+        <button class="qr-btn" onclick="showQR()">QR Code</button>
+      </div>
+      <div class="bottom-bar-right">
+        <div class="stat-pill"><strong id="response-count">0</strong> responses</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARTICIPANT VIEW -->
+  <div id="participant-view" class="screen">
+    <div class="participant-slide-card">
+      <div class="p-progress" id="p-progress"></div>
+      <div class="p-slide-indicator" id="p-slide-indicator">Question 1</div>
+      <div class="p-question" id="p-question">Loading...</div>
+      <div class="p-question-type" id="p-question-type"></div>
+    </div>
+    <div class="form-card" style="max-width:500px;">
+      <div class="field">
+        <label>Your response</label>
+        <input id="response-input" type="text" placeholder="Share your idea..." maxlength="200"/>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="submitResponse()">Submit →</button>
+    </div>
+    <div class="submitted-list" id="submitted-list"></div>
+  </div>
+
+  <!-- HISTORY -->
+  <div id="history" class="screen">
+    <div class="history-section">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div class="history-title">Past Sessions</div>
+        <button class="btn btn-ghost btn-sm" onclick="showScreen('home')">← Back</button>
+      </div>
+      <div id="history-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- QR MODAL -->
+<div class="qr-modal" id="qr-modal" onclick="closeQR()">
+  <div class="qr-card" onclick="event.stopPropagation()">
+    <p style="color:#888;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;">Scan to join</p>
+    <canvas id="qr-canvas"></canvas>
+    <div class="qr-code-text" id="qr-code-display">—</div>
+    <button class="qr-close" onclick="closeQR()">Close</button>
+  </div>
+</div>
+
+<!-- FINAL SUMMARY -->
+<div class="final-summary-overlay" id="final-summary-overlay">
+  <div class="final-summary-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+      <div class="final-summary-title">Session Summary</div>
+    </div>
+    <div class="final-summary-text" id="final-summary-text">Generating your session summary...</div>
+    <div class="summary-actions">
+      <button class="btn btn-secondary btn-sm" onclick="copySummary()">Copy Summary</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeSummaryAndGoHome()">Back to Home</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const SUPABASE_URL = "https://nxqikfmnyqdaefwjywuv.supabase.co"
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54cWlrZm1ueXFkYWVmd2p5d3V2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyOTkxMjQsImV4cCI6MjA5NTg3NTEyNH0.j7xSDDGedMtDqtgglyAQabV34Nj5LWkZwfHTLBaUVSw"
+  const { createClient } = supabase
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+  let currentRoom = null, slides = [], currentSlideIndex = 0
+  let allResponses = [], allSessionResponses = {}
+  let clusterTimeout = null, slideCount = 1
+
+  setTimeout(() => { const i = document.getElementById('intro'); if(i) i.remove() }, 4000)
+
+  // ---- NAV ----
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
+    const el = document.getElementById(id)
+    if (el) el.classList.add('active')
+    if (id === 'history') loadHistory()
+  }
+
+  function goHome() {
+    currentRoom = null; slides = []; currentSlideIndex = 0
+    allResponses = []; allSessionResponses = {}
+    showScreen('home')
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast')
+    t.textContent = msg; t.classList.add('show')
+    setTimeout(() => t.classList.remove('show'), 2800)
+  }
+
+  // ---- HOME TABS ----
+  function switchHomeTab(id, btn) {
+    document.querySelectorAll('.home-tab').forEach(t => t.classList.remove('active'))
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'))
+    btn.classList.add('active')
+    document.getElementById('tab-' + id).classList.add('active')
+  }
+
+  function switchRoleTab(id, btn) {
+    document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'))
+    document.querySelectorAll('.role-panel').forEach(p => p.classList.remove('active'))
+    btn.classList.add('active')
+    document.getElementById('role-' + id).classList.add('active')
+  }
+
+  function toggleFaq(el) {
+    const item = el.closest('.faq-item')
+    item.classList.toggle('open')
+  }
+
+  // ---- SLIDE BUILDER ----
+  function addSlide() {
+    slideCount++
+    const builder = document.getElementById('slide-builder')
+    const div = document.createElement('div')
+    div.className = 'slide-item'
+    div.innerHTML = `
+      <div class="slide-item-header">
+        <span class="slide-num-badge">Question ${slideCount}</span>
+        <button class="btn btn-ghost btn-sm" onclick="removeSlide(this)">Remove</button>
+      </div>
+      <input type="text" placeholder="Ask your audience something..." class="slide-question-input"/>
+      <select class="slide-type">
+        <option value="cluster">💬 Idea Clusters</option>
+        <option value="ranking">📊 Theme Ranking</option>
+        <option value="sentiment">❤️ Sentiment</option>
+      </select>`
+    builder.appendChild(div)
+  }
+
+  function removeSlide(btn) {
+    const items = document.querySelectorAll('.slide-item')
+    if (items.length <= 1) { showToast('Need at least one question!'); return }
+    btn.closest('.slide-item').remove()
+    document.querySelectorAll('.slide-item').forEach((item, i) => {
+      item.querySelector('.slide-num-badge').textContent = `Question ${i + 1}`
+    })
+    slideCount = document.querySelectorAll('.slide-item').length
+  }
+
+  // ---- CREATE ROOM ----
+  async function createRoom() {
+    const errEl = document.getElementById('create-error')
+    const questions = Array.from(document.querySelectorAll('.slide-item')).map(item => ({
+      question: item.querySelector('.slide-question-input').value.trim(),
+      type: item.querySelector('.slide-type').value
+    })).filter(s => s.question)
+    if (questions.length === 0) { errEl.style.display = 'block'; return }
+    errEl.style.display = 'none'
+    const code = Math.random().toString(36).substring(2, 8).toUpperCase()
+    const title = document.getElementById('session-title').value.trim() || 'Session'
+    const { data, error } = await db.from('rooms').insert({ code, question: JSON.stringify({ title, slides: questions, currentSlide: 0 }) }).select().single()
+    if (error) { alert('Error: ' + error.message); return }
+    currentRoom = data; slides = questions; currentSlideIndex = 0; allSessionResponses = {}
+    saveToHistory({ id: data.id, title, code, date: new Date().toISOString(), slideCount: questions.length })
+    document.getElementById('bottom-code').textContent = code
+    updateHostSlideDisplay()
+    showScreen('host-view')
+    startListening(data.id)
+  }
+
+  // ---- HOST DISPLAY ----
+  function updateHostSlideDisplay() {
+    const slide = slides[currentSlideIndex]
+    const typeLabel = slide.type === 'cluster' ? 'Idea Clusters' : slide.type === 'ranking' ? 'Theme Ranking' : 'Sentiment'
+    document.getElementById('slide-eyebrow').textContent = `Question ${currentSlideIndex + 1} of ${slides.length} — ${typeLabel}`
+    document.getElementById('slide-question-display').textContent = slide.question
+    const pct = slides.length > 1 ? (currentSlideIndex / (slides.length - 1)) * 100 : 100
+    document.getElementById('progress-fill').style.width = pct + '%'
+    document.getElementById('progress-label').textContent = `${currentSlideIndex + 1} / ${slides.length}`
+    allResponses = []
+    document.getElementById('response-count').textContent = 0
+    document.getElementById('cluster-count').textContent = 0
+    document.getElementById('insights-dashboard').style.display = 'none'
+    document.getElementById('waiting-dashboard').style.display = 'flex'
+    document.getElementById('clusters-grid').innerHTML = `<div class="waiting-state"><div class="spinner"></div><p style="font-size:0.85rem;">Waiting for responses...</p></div>`
+    document.getElementById('ai-synthesis-text').textContent = ''
+    document.getElementById('ai-synthesis-text').classList.remove('visible')
+    document.getElementById('ai-thinking').style.display = 'flex'
+    document.getElementById('standout-quote').textContent = ''
+    document.getElementById('standout-quote').classList.remove('visible')
+    document.getElementById('sentiment-bars').innerHTML = `<div class="waiting-state" style="padding:1rem;"><p style="font-size:0.82rem;">Building picture...</p></div>`
+    clearTimeout(clusterTimeout)
+  }
+
+  async function updateCurrentSlide() {
+    updateHostSlideDisplay()
+    if (currentRoom) {
+      const title = document.getElementById('session-title')?.value || 'Session'
+      await db.from('rooms').update({ question: JSON.stringify({ title, slides, currentSlide: currentSlideIndex }) }).eq('id', currentRoom.id)
+    }
+  }
+
+  function nextSlide() { if (currentSlideIndex < slides.length - 1) { currentSlideIndex++; updateCurrentSlide() } else showToast('Last question!') }
+  function prevSlide() { if (currentSlideIndex > 0) { currentSlideIndex--; updateCurrentSlide() } else showToast('First question!') }
+
+  function copyLink() {
+    const url = `${window.location.origin}${window.location.pathname}?join=${currentRoom.code}`
+    navigator.clipboard.writeText(url)
+    showToast('Link copied!')
+  }
+
+  // ---- QR ----
+  function showQR() {
+    const url = `${window.location.origin}${window.location.pathname}?join=${currentRoom.code}`
+    QRCode.toCanvas(document.getElementById('qr-canvas'), url, { width: 220, margin: 2, color: { dark: '#111', light: '#fff' } })
+    document.getElementById('qr-code-display').textContent = currentRoom.code
+    document.getElementById('qr-modal').classList.add('visible')
+  }
+  function closeQR() { document.getElementById('qr-modal').classList.remove('visible') }
+
+  // ---- REALTIME ----
+  function startListening(roomId) {
+    db.channel('responses-' + roomId)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'responses', filter: `room_id=eq.${roomId}` }, payload => {
+        if (payload.new.slide_index === currentSlideIndex) {
+          allResponses.push(payload.new)
+          if (!allSessionResponses[payload.new.slide_index]) allSessionResponses[payload.new.slide_index] = []
+          allSessionResponses[payload.new.slide_index].push(payload.new)
+          const el = document.getElementById('response-count')
+          el.textContent = allResponses.length
+          el.classList.remove('count-bump'); void el.offsetWidth; el.classList.add('count-bump')
+          if (allResponses.length >= 3) {
+            document.getElementById('insights-dashboard').style.display = 'grid'
+            document.getElementById('waiting-dashboard').style.display = 'none'
+          }
+          scheduleClustering()
+        }
+      }).subscribe()
+  }
+
+  // ---- CLUSTERING ----
+  function scheduleClustering() { clearTimeout(clusterTimeout); clusterTimeout = setTimeout(runClustering, 2500) }
+
+  async function runClustering() {
+    if (allResponses.length === 0) return
+    const slide = slides[currentSlideIndex]
+    const responseTexts = allResponses.map(r => r.content).join('\n')
+    const isRanking = slide.type === 'ranking'
+
+    const prompt = `Analyse these live brainstorm responses to: "${slide.question}"
+Responses:
+${responseTexts}
+
+Return JSON only:
+{
+  "clusters": [{"label":"name","items":["r1","r2"],"count":2,"insight":"optional for top clusters"}],
+  "summary": "2-3 sentence synthesis of what the group is really saying.",
+  "standout": "The single most interesting or insightful response verbatim.",
+  "sentiment": {"positive": 40, "neutral": 35, "concerned": 25}
+}`
+
+    try {
+      const res = await fetch("/api/cluster", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 1200, messages: [{ role: "user", content: prompt }] }) })
+      const data = await res.json()
+      const text = data.content?.[0]?.text || ""
+      const parsed = JSON.parse(text.replace(/```json|```/g, "").trim())
+      if (isRanking) renderBarChart(parsed)
+      else renderClusters(parsed)
+      updateSynthesis(parsed)
+      updateSentiment(parsed.sentiment)
+      updateStandout(parsed.standout)
+    } catch(e) { console.error("Cluster error:", e) }
+  }
+
+  function renderClusters(data) {
+    const grid = document.getElementById('clusters-grid')
+    grid.innerHTML = ""
+    document.getElementById('clusters-panel-title').textContent = 'Key Themes'
+    const sorted = [...data.clusters].sort((a,b) => b.count - a.count)
+    sorted.forEach((cluster, i) => {
+      const isTop = i < 3 && cluster.count >= 2
+      const card = document.createElement('div')
+      card.className = `cluster-card ${isTop ? 'top' : ''}`
+      card.innerHTML = `
+        <div class="cluster-title">
+          <div class="cluster-name">${isTop ? '✦ ' : ''}${cluster.label}</div>
+          <span class="cluster-count-badge">${cluster.count || cluster.items.length}</span>
+        </div>
+        <div class="cluster-tags">${cluster.items.map(i => `<span class="response-tag">${i}</span>`).join('')}</div>
+        ${cluster.insight ? `<div class="cluster-insight-text">${cluster.insight}</div>` : ''}`
+      grid.appendChild(card)
+    })
+    document.getElementById('cluster-count').textContent = data.clusters.length
+  }
+
+  function renderBarChart(data) {
+    const grid = document.getElementById('clusters-grid')
+    grid.innerHTML = ""
+    document.getElementById('clusters-panel-title').textContent = 'Theme Ranking'
+    const sorted = [...data.clusters].sort((a,b) => b.count - a.count)
+    const max = sorted[0]?.count || 1
+    const wrap = document.createElement('div')
+    wrap.className = 'chart-wrap'; wrap.style.width = '100%'
+    sorted.forEach((cluster, i) => {
+      const pct = Math.round((cluster.count / max) * 100)
+      const row = document.createElement('div')
+      row.className = 'chart-bar-row'
+      row.style.animationDelay = `${i * 0.08}s`
+      row.innerHTML = `
+        <div class="chart-bar-label">${i < 3 ? '✦ ' : ''}${cluster.label}</div>
+        <div class="chart-bar-track"><div class="chart-bar-fill" style="width:0%"><span class="chart-bar-count">${cluster.count}</span></div></div>`
+      wrap.appendChild(row)
+      setTimeout(() => { row.querySelector('.chart-bar-fill').style.width = pct + '%' }, 100 + i * 80)
+    })
+    grid.appendChild(wrap)
+    document.getElementById('cluster-count').textContent = data.clusters.length
+  }
+
+  function updateSynthesis(data) {
+    const el = document.getElementById('ai-synthesis-text')
+    const thinking = document.getElementById('ai-thinking')
+    if (data.summary) {
+      el.textContent = data.summary
+      thinking.style.display = 'none'
+      setTimeout(() => el.classList.add('visible'), 50)
+    }
+  }
+
+  function updateSentiment(sentiment) {
+    if (!sentiment) return
+    const bars = document.getElementById('sentiment-bars')
+    const items = [
+      { label: 'Positive', value: sentiment.positive || 0, color: 'var(--accent3)' },
+      { label: 'Neutral', value: sentiment.neutral || 0, color: 'var(--accent)' },
+      { label: 'Concerned', value: sentiment.concerned || 0, color: 'var(--accent2)' }
+    ]
+    bars.innerHTML = items.map(item => `
+      <div class="sentiment-row">
+        <div class="sentiment-label">${item.label}</div>
+        <div class="sentiment-track"><div class="sentiment-fill" style="width:0%;background:${item.color}" data-val="${item.value}"></div></div>
+        <div class="sentiment-count">${item.value}%</div>
+      </div>`).join('')
+    setTimeout(() => {
+      bars.querySelectorAll('.sentiment-fill').forEach(el => { el.style.width = el.dataset.val + '%' })
+    }, 100)
+  }
+
+  function updateStandout(quote) {
+    if (!quote) return
+    const el = document.getElementById('standout-quote')
+    el.textContent = `"${quote}"`
+    setTimeout(() => el.classList.add('visible'), 200)
+  }
+
+  // ---- END SESSION ----
+  async function endSession() {
+    const overlay = document.getElementById('final-summary-overlay')
+    const textEl = document.getElementById('final-summary-text')
+    overlay.classList.add('visible')
+    textEl.textContent = 'Generating your session summary...'
+    const hasResponses = Object.keys(allSessionResponses).length > 0
+    if (!hasResponses) { textEl.textContent = 'No responses were collected in this session.'; return }
+    let allContext = slides.map((s, i) => {
+      const responses = (allSessionResponses[i] || []).map(r => r.content).join(', ')
+      return `Question ${i+1}: "${s.question}"\nResponses: ${responses || 'No responses'}`
+    }).join('\n\n')
+    const prompt = `You facilitated a live workshop. Here's what happened:\n${allContext}\n\nWrite a concise session synthesis (5-6 sentences) that:\n1. Identifies strongest themes across the whole session\n2. Notes any tensions or interesting contrasts\n3. Highlights the most actionable insight\n4. Ends with one recommended next step\n\nWrite in a warm, professional facilitation voice.`
+    try {
+      const res = await fetch("/api/cluster", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 500, messages: [{ role: "user", content: prompt }] }) })
+      const data = await res.json()
+      textEl.textContent = data.content?.[0]?.text || "Could not generate summary."
+    } catch(e) { textEl.textContent = "Error generating summary." }
+  }
+
+  function closeSummaryAndGoHome() { document.getElementById('final-summary-overlay').classList.remove('visible'); goHome() }
+  function copySummary() { navigator.clipboard.writeText(document.getElementById('final-summary-text').textContent); showToast('Summary copied!') }
+
+  // ---- HISTORY ----
+  function saveToHistory(session) {
+    const history = JSON.parse(localStorage.getItem('agora_history') || '[]')
+    history.unshift(session)
+    localStorage.setItem('agora_history', JSON.stringify(history.slice(0, 20)))
+  }
+
+  function loadHistory() {
+    const history = JSON.parse(localStorage.getItem('agora_history') || '[]')
+    const list = document.getElementById('history-list')
+    if (history.length === 0) { list.innerHTML = '<div class="history-empty">No past sessions yet. Host your first session!</div>'; return }
+    list.innerHTML = history.map(s => `
+      <div class="history-item">
+        <div>
+          <div class="history-item-title">${s.title}</div>
+          <div class="history-item-date">${new Date(s.date).toLocaleDateString('en-AU', { day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit' })} · ${s.slideCount} question${s.slideCount !== 1 ? 's' : ''} · Code: ${s.code}</div>
+        </div>
+      </div>`).join('')
+  }
+
+  // ---- PARTICIPANT ----
+  async function joinRoom() {
+    const code = document.getElementById('join-code').value.trim().toUpperCase()
+    const errEl = document.getElementById('join-error')
+    if (!code) return
+    const { data, error } = await db.from('rooms').select().eq('code', code).single()
+    if (error || !data) { errEl.style.display = 'block'; return }
+    errEl.style.display = 'none'
+    currentRoom = data
+    try {
+      const parsed = JSON.parse(data.question)
+      slides = parsed.slides || [{ question: data.question, type: 'cluster' }]
+      currentSlideIndex = parsed.currentSlide || 0
+    } catch(e) { slides = [{ question: data.question, type: 'cluster' }]; currentSlideIndex = 0 }
+    updateParticipantView()
+    showScreen('participant-view')
+    listenForSlideChanges()
+  }
+
+  function updateParticipantView() {
+    const slide = slides[currentSlideIndex]
+    document.getElementById('p-slide-indicator').textContent = `Question ${currentSlideIndex + 1} of ${slides.length}`
+    document.getElementById('p-question').textContent = slide.question
+    document.getElementById('p-question-type').textContent = slide.type === 'cluster' ? 'Share your ideas — all responses welcome' : slide.type === 'ranking' ? 'What are the key themes you see?' : 'Share how you feel about this'
+    const dotsEl = document.getElementById('p-progress')
+    dotsEl.innerHTML = slides.map((_, i) => `<div class="p-progress-dot ${i < currentSlideIndex ? 'done' : i === currentSlideIndex ? 'active' : ''}"></div>`).join('')
+  }
+
+  function listenForSlideChanges() {
+    setInterval(async () => {
+      if (!currentRoom) return
+      const { data } = await db.from('rooms').select().eq('id', currentRoom.id).single()
+      if (!data) return
+      try {
+        const parsed = JSON.parse(data.question)
+        if (parsed.currentSlide !== undefined && parsed.currentSlide !== currentSlideIndex) {
+          currentSlideIndex = parsed.currentSlide; slides = parsed.slides
+          updateParticipantView()
+          document.getElementById('submitted-list').innerHTML = ''
+          document.getElementById('response-input').value = ''
+          showToast('New question!')
+        }
+      } catch(e) {}
+    }, 3000)
+  }
+
+  async function submitResponse() {
+    const input = document.getElementById('response-input')
+    const content = input.value.trim()
+    if (!content || !currentRoom) return
+    const { error } = await db.from('responses').insert({ room_id: currentRoom.id, content, slide_index: currentSlideIndex })
+    if (error) { showToast('Error submitting.'); return }
+    const list = document.getElementById('submitted-list')
+    const item = document.createElement('div')
+    item.className = 'submitted-item'; item.textContent = content
+    list.prepend(item); input.value = ''; showToast('Submitted!')
+  }
+
+  window.addEventListener('load', () => {
+    const code = new URLSearchParams(window.location.search).get('join')
+    if (code) { document.getElementById('join-code').value = code; joinRoom() }
+  })
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      if (document.activeElement === document.getElementById('response-input')) submitResponse()
+      if (document.activeElement === document.getElementById('join-code')) joinRoom()
+    }
+  })
+</script>
+</body>
+</html>
