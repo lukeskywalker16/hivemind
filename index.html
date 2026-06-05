@@ -1181,7 +1181,7 @@
     `).join('')
   }
 
-  function updateCurrentSlide() {
+  async function updateCurrentSlide() {
     const slide = slides[currentSlideIndex]
     document.getElementById('display-question').textContent = slide.question
     document.getElementById('current-slide-num').textContent = currentSlideIndex + 1
@@ -1196,7 +1196,7 @@
 
     // Update Supabase room with current slide index
     if (currentRoom) {
-    db.from('rooms').update({ question: JSON.stringify({ title: 'session', slides, currentSlide: currentSlideIndex }) }).eq('id', currentRoom.id)
+    await db.from('rooms').update({ question: JSON.stringify({ title: 'session', slides, currentSlide: currentSlideIndex }) }).eq('id', currentRoom.id)
     }
   }
 
