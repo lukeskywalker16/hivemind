@@ -1418,6 +1418,7 @@ Keep it to 4 sentences max. Be specific, grounded, and insightful. Do not make t
 function listenForSlideChanges() {
     setInterval(async () => {
       if (!currentRoom) return
+console.log('Checking for slide changes... current:', currentSlideIndex)
       const { data } = await db.from('rooms').select().eq('id', currentRoom.id).single()
       if (!data) return
       try {
