@@ -1340,24 +1340,23 @@ Return JSON only:
     const history = JSON.parse(localStorage.getItem('agora_history') || '[]')
     const list = document.getElementById('history-list')
     if (history.length === 0) { list.innerHTML = '<div class="history-empty">No past sessions yet. Host your first session!</div>'; return }
-    list.innerHTML = history.map(s => `
+    list.innerHTML = history.map((s, i) => `
       <div class="history-item">
         <div>
           <div class="history-item-title">${s.title}</div>
           <div class="history-item-date">${new Date(s.date).toLocaleDateString('en-AU', { day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit' })} · ${s.slideCount} question${s.slideCount !== 1 ? 's' : ''} · Code: ${s.code}</div>
         </div>
+        <button class="btn btn-glow-pink btn-sm" onclick="deleteSession(${i})">Delete</button>
       </div>`).join('')
   }
 
-  // ---- PARTICIPANT ----
-  async function joinRoom() {
-    const code = document.getElementById('join-code').value.trim().toUpperCase()
-    const errEl = document.getElementById('join-error')
-    if (!code) return
-    const { data, error } = await db.from('rooms').select().eq('code', code).single()
-    if (error || !data) { errEl.style.display = 'block'; return }
-    errEl.style.display = 'none'
-    currentRoom = data
+  function deleteSession(index) {
+    const history = JSON.parse(localStorage.getItem('agora_history') || '[]')
+    history.splice(index, 1)
+    localStorage.setItem('agora_history', JSON.stringify(history))
+    loadHistory()
+    showToast('Session deleted')
+  }
     try {
       const parsed = JSON.parse(data.question)
       slides = parsed.slides || [{ question: data.question, type: 'cluster' }]
