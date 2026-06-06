@@ -1357,6 +1357,16 @@ Return JSON only:
     loadHistory()
     showToast('Session deleted')
   }
+
+  // ---- PARTICIPANT ----
+  async function joinRoom() {
+    const code = document.getElementById('join-code').value.trim().toUpperCase()
+    const errEl = document.getElementById('join-error')
+    if (!code) return
+    const { data, error } = await db.from('rooms').select().eq('code', code).single()
+    if (error || !data) { errEl.style.display = 'block'; return }
+    errEl.style.display = 'none'
+    currentRoom = data
     try {
       const parsed = JSON.parse(data.question)
       slides = parsed.slides || [{ question: data.question, type: 'cluster' }]
@@ -1440,69 +1450,75 @@ Return JSON only:
   }
 
   // ---- PARTICLE NETWORK ----
-  ;(function initParticles() {
-    function start() {
-      const canvas = document.getElementById('particle-canvas')
-      if (!canvas) { setTimeout(start, 500); return }
-      const ctx = canvas.getContext('2d')
-      let nodes = [], raf, W = 0, H = 0
+  ;(function() {
+    let raf, nodes = [], W, H, ctx, canvas
+
+    function setup() {
+      canvas = document.getElementById('particle-canvas')
+      if (!canvas) return
+      ctx = canvas.getContext('2d')
+      resize()
+      makeNodes()
+      if (raf) cancelAnimationFrame(raf)
+      loop()
+    }
+
+    function resize() {
+      W = canvas.width = canvas.parentElement ? canvas.parentElement.offsetWidth : window.innerWidth
+      H = canvas.height = canvas.parentElement ? canvas.parentElement.offsetHeight : window.innerHeight
+      if (W < 10) { W = canvas.width = window.innerWidth }
+      if (H < 10) { H = canvas.height = window.innerHeight }
+    }
+
+    function makeNodes() {
       const COLORS = ['#7c6aff','#ff6a9a','#6affcb']
+      nodes = Array.from({length:55}, () => ({
+        x: Math.random()*W, y: Math.random()*H,
+        vx: (Math.random()-.5)*.4, vy: (Math.random()-.5)*.4,
+        r: Math.random()*2+1.5,
+        c: COLORS[Math.random()*3|0],
+        p: Math.random()*Math.PI*2, ps: .015+Math.random()*.02
+      }))
+    }
 
-      function resize() {
-        W = canvas.width = canvas.offsetWidth || window.innerWidth
-        H = canvas.height = canvas.offsetHeight || window.innerHeight
-      }
-
-      function make() {
-        nodes = Array.from({length:55}, () => ({
-          x: Math.random()*W, y: Math.random()*H,
-          vx: (Math.random()-.5)*.4, vy: (Math.random()-.5)*.4,
-          r: Math.random()*2+1,
-          c: COLORS[Math.random()*3|0],
-          p: Math.random()*Math.PI*2, ps: .02+Math.random()*.02
-        }))
-      }
-
-      function draw() {
-        ctx.clearRect(0,0,W,H)
-        for (let i=0;i<nodes.length;i++) {
-          for (let j=i+1;j<nodes.length;j++) {
-            const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y
-            const d=Math.sqrt(dx*dx+dy*dy)
-            if (d<160) {
-              ctx.beginPath()
-              ctx.strokeStyle=`rgba(124,106,255,${(1-d/160)*.22})`
-              ctx.lineWidth=.8
-              ctx.moveTo(nodes[i].x,nodes[i].y)
-              ctx.lineTo(nodes[j].x,nodes[j].y)
-              ctx.stroke()
-            }
+    function loop() {
+      ctx.clearRect(0,0,W,H)
+      // connections
+      for (let i=0;i<nodes.length;i++) {
+        for (let j=i+1;j<nodes.length;j++) {
+          const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y
+          const d=Math.sqrt(dx*dx+dy*dy)
+          if (d<160) {
+            ctx.beginPath()
+            ctx.strokeStyle=`rgba(124,106,255,${(1-d/160)*.2})`
+            ctx.lineWidth=.7
+            ctx.moveTo(nodes[i].x,nodes[i].y)
+            ctx.lineTo(nodes[j].x,nodes[j].y)
+            ctx.stroke()
           }
         }
-        for (const n of nodes) {
-          n.p+=n.ps
-          const r=n.r*(1+Math.sin(n.p)*.3)
-          ctx.beginPath(); ctx.arc(n.x,n.y,r*4,0,Math.PI*2)
-          ctx.fillStyle=n.c+'22'; ctx.fill()
-          ctx.beginPath(); ctx.arc(n.x,n.y,r,0,Math.PI*2)
-          ctx.fillStyle=n.c; ctx.globalAlpha=.85; ctx.fill(); ctx.globalAlpha=1
-          n.x+=n.vx; n.y+=n.vy
-          if(n.x<0||n.x>W) n.vx*=-1
-          if(n.y<0||n.y>H) n.vy*=-1
-        }
-        raf=requestAnimationFrame(draw)
       }
-
-      function init() {
-        resize(); make()
-        if(raf) cancelAnimationFrame(raf)
-        draw()
+      // nodes
+      for (const n of nodes) {
+        n.p+=n.ps
+        const r=n.r*(1+Math.sin(n.p)*.25)
+        // glow
+        ctx.beginPath(); ctx.arc(n.x,n.y,r*5,0,Math.PI*2)
+        ctx.fillStyle=n.c+'18'; ctx.fill()
+        // core
+        ctx.beginPath(); ctx.arc(n.x,n.y,r,0,Math.PI*2)
+        ctx.fillStyle=n.c; ctx.globalAlpha=.8; ctx.fill(); ctx.globalAlpha=1
+        // move
+        n.x+=n.vx; n.y+=n.vy
+        if(n.x<0||n.x>W) n.vx*=-1
+        if(n.y<0||n.y>H) n.vy*=-1
       }
-
-      window.addEventListener('resize', init)
-      init()
+      raf=requestAnimationFrame(loop)
     }
-    setTimeout(start, 3300)
+
+    window.addEventListener('resize', () => { if(canvas) { resize() } })
+    // Start after intro finishes
+    setTimeout(setup, 3400)
   })()
 
 </script>
