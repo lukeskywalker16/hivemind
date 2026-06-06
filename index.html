@@ -161,7 +161,45 @@
     select option { background: var(--surface2); }
     .error-msg { color: var(--accent2); font-size: 0.85rem; display: none; }
 
+    /* CREATE LAYOUT */
+    .create-layout { display: grid; grid-template-columns: 1fr 280px; min-height: calc(100vh - 57px); }
+    .create-main { padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; overflow-y: auto; }
+    .create-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .create-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.04em; }
+    .create-deck-label { font-size: 0.75rem; color: var(--muted); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    /* TOOLBAR */
+    .create-toolbar { border-left: 1px solid var(--border); background: var(--surface); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+    .toolbar-label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+    .toolbar-types { display: flex; flex-direction: column; gap: 0.6rem; }
+    .type-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.9rem; display: flex; flex-direction: column; gap: 0.4rem; cursor: pointer; transition: all 0.2s; text-align: left; }
+    .type-btn:hover { border-color: var(--accent); box-shadow: 0 0 12px rgba(124,106,255,0.15); transform: translateY(-1px); }
+    .type-btn:active { transform: translateY(0); }
+    .type-btn-icon { width: 32px; height: 32px; }
+    .type-btn-icon svg { width: 100%; height: 100%; }
+    .type-btn-label { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+    .type-btn-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
+    .toolbar-tip { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; }
+
     /* SLIDE BUILDER */
+    .slide-builder { display: flex; flex-direction: column; gap: 0.75rem; max-width: 600px; }
+    .slide-item { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; animation: fadeUp 0.3s ease; }
+    .slide-item-header { display: flex; align-items: center; justify-content: space-between; }
+    .slide-item-left { display: flex; align-items: center; gap: 0.6rem; }
+    .slide-type-icon { width: 24px; height: 24px; flex-shrink: 0; }
+    .slide-type-icon svg { width: 100%; height: 100%; }
+    .slide-num-badge { font-size: 0.72rem; color: var(--accent); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+    .slide-delete-btn { background: transparent; border: none; color: var(--muted); cursor: pointer; padding: 0.3rem; border-radius: 6px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+    .slide-delete-btn:hover { color: var(--accent2); background: rgba(255,106,154,0.1); }
+
+    @media (max-width: 768px) {
+      .create-layout { grid-template-columns: 1fr; }
+      .create-toolbar { border-left: none; border-top: 1px solid var(--border); }
+      .toolbar-types { flex-direction: row; overflow-x: auto; }
+      .type-btn { min-width: 160px; }
+    }
+
+    /* SLIDE BUILDER OLD (kept for reference) */
     .slide-builder { display: flex; flex-direction: column; gap: 0.75rem; }
     .slide-item { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; animation: fadeUp 0.3s ease; }
     .slide-item-header { display: flex; align-items: center; justify-content: space-between; }
@@ -455,7 +493,7 @@
                 <svg viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
                   <rect x="10" y="10" width="100" height="70" rx="8" fill="#0f0f1a" stroke="#252538" stroke-width="1.5"/>
                   <rect x="15" y="60" width="90" height="14" rx="4" fill="#0a0a14" stroke="#252538" stroke-width="1"/>
-                  <text x="60" y="71" text-anchor="middle" font-family="monospace" font-size="10" fill="#6affcb" letter-spacing="3">X7K9PQ</text>
+                  
                   <rect x="35" y="15" width="50" height="40" rx="4" fill="#171726" stroke="#252538" stroke-width="1"/>
                   <rect x="42" y="22" width="36" height="36" rx="2" fill="#252538"/>
                   <rect x="45" y="25" width="8" height="8" rx="1" fill="#7c6aff"/>
@@ -481,7 +519,7 @@
                 <svg viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
                   <rect x="5" y="5" width="110" height="80" rx="8" fill="#0f0f1a" stroke="#252538" stroke-width="1.5"/>
                   <rect x="12" y="12" width="96" height="22" rx="4" fill="#171726" stroke="rgba(124,106,255,0.3)" stroke-width="1"/>
-                  <text x="60" y="27" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#eeeef8" opacity="0.7">✦ The group sees AI as both an opportunity...</text>
+                  
                   <rect x="12" y="38" width="44" height="22" rx="4" fill="#171726" stroke="#252538" stroke-width="1"/>
                   <rect x="16" y="42" width="20" height="3" rx="1" fill="#7c6aff" opacity="0.8"/>
                   <rect x="16" y="47" width="35" height="2" rx="1" fill="#252538"/>
@@ -511,15 +549,15 @@
                   <rect x="10" y="10" width="100" height="70" rx="8" fill="#0f0f1a" stroke="#252538" stroke-width="1.5"/>
                   <circle cx="35" cy="35" r="10" fill="none" stroke="#252538" stroke-width="1.5"/>
                   <circle cx="35" cy="35" r="10" fill="none" stroke="#7c6aff" stroke-width="1.5" stroke-dasharray="63" stroke-dashoffset="16" class="progress-ring"/>
-                  <text x="35" y="39" text-anchor="middle" font-size="8" fill="#eeeef8" font-family="sans-serif">2/3</text>
+                  
                   <rect x="55" y="28" width="45" height="6" rx="3" fill="#7c6aff" opacity="0.9"/>
                   <rect x="55" y="38" width="45" height="6" rx="3" fill="#252538"/>
                   <rect x="18" y="58" width="28" height="10" rx="4" fill="#252538" stroke="#252538"/>
-                  <text x="32" y="66" text-anchor="middle" font-size="7" fill="#5a5a7a" font-family="sans-serif">← Prev</text>
+                  
                   <rect x="50" y="58" width="28" height="10" rx="4" fill="#7c6aff"/>
-                  <text x="64" y="66" text-anchor="middle" font-size="7" fill="white" font-family="sans-serif">Next →</text>
+                  
                   <rect x="82" y="58" width="28" height="10" rx="4" fill="none" stroke="rgba(106,255,203,0.4)" stroke-width="1"/>
-                  <text x="96" y="66" text-anchor="middle" font-size="6" fill="#6affcb" font-family="sans-serif">✦ AI</text>
+                  
                 </svg>
               </div>
               <div class="astep-content">
@@ -540,16 +578,16 @@
                       <stop offset="100%" stop-color="#ff6a9a"/>
                     </linearGradient>
                   </defs>
-                  <text x="60" y="24" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#7c6aff" font-weight="bold" letter-spacing="1">SESSION SUMMARY</text>
+                  
                   <rect x="18" y="28" width="84" height="3" rx="1" fill="#252538"/>
                   <rect x="18" y="34" width="84" height="3" rx="1" fill="#252538"/>
                   <rect x="18" y="40" width="60" height="3" rx="1" fill="#252538"/>
                   <rect x="18" y="52" width="36" height="10" rx="4" fill="#171726" stroke="#252538" stroke-width="1"/>
-                  <text x="36" y="60" text-anchor="middle" font-size="6" fill="#5a5a7a" font-family="sans-serif">Copy</text>
+                  
                   <rect x="58" y="52" width="44" height="10" rx="4" fill="none" stroke="rgba(255,106,154,0.4)" stroke-width="1"/>
-                  <text x="80" y="60" text-anchor="middle" font-size="6" fill="#ff6a9a" font-family="sans-serif">Back to Home</text>
+                  
                   <circle cx="93" cy="24" r="5" fill="#6affcb" opacity="0.8"/>
-                  <text x="93" y="27" text-anchor="middle" font-size="7" fill="#0a0a14">✓</text>
+                  
                 </svg>
               </div>
               <div class="astep-content">
@@ -570,11 +608,11 @@
                 <svg viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
                   <rect x="30" y="5" width="60" height="80" rx="8" fill="#0f0f1a" stroke="#252538" stroke-width="1.5"/>
                   <rect x="35" y="18" width="50" height="8" rx="3" fill="#171726" stroke="#252538" stroke-width="1"/>
-                  <text x="60" y="25" text-anchor="middle" font-size="8" fill="#eeeef8" font-family="monospace" letter-spacing="2">X7K9PQ</text>
+                  
                   <rect x="35" y="32" width="50" height="14" rx="4" fill="#7c6aff"/>
-                  <text x="60" y="42" text-anchor="middle" font-size="8" fill="white" font-family="sans-serif">Join →</text>
+                  
                   <circle cx="60" cy="65" r="8" fill="#171726" stroke="#252538"/>
-                  <text x="60" y="69" text-anchor="middle" font-size="9" fill="#6affcb">✓</text>
+                  
                 </svg>
               </div>
               <div class="astep-content">
@@ -589,12 +627,12 @@
                 <svg viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
                   <rect x="25" y="5" width="70" height="80" rx="8" fill="#0f0f1a" stroke="#252538" stroke-width="1.5"/>
                   <rect x="30" y="14" width="60" height="22" rx="4" fill="#171726" stroke="#252538"/>
-                  <text x="60" y="28" text-anchor="middle" font-size="7" fill="#eeeef8" font-family="sans-serif" opacity="0.9">What challenges do you</text>
-                  <text x="60" y="36" text-anchor="middle" font-size="7" fill="#eeeef8" font-family="sans-serif" opacity="0.9">see AI posing?</text>
+                  
+                  
                   <rect x="30" y="42" width="60" height="12" rx="3" fill="#171726" stroke="#7c6aff" stroke-width="1"/>
-                  <text x="60" y="51" text-anchor="middle" font-size="6" fill="#5a5a7a" font-family="sans-serif">Type your response...</text>
+                  
                   <rect x="30" y="60" width="60" height="12" rx="4" fill="#7c6aff"/>
-                  <text x="60" y="69" text-anchor="middle" font-size="7" fill="white" font-family="sans-serif">Submit →</text>
+                  
                   <rect x="35" y="76" width="15" height="4" rx="2" fill="#6affcb" opacity="0.5"/>
                   <rect x="53" y="76" width="15" height="4" rx="2" fill="#252538"/>
                   <rect x="71" y="76" width="15" height="4" rx="2" fill="#252538"/>
@@ -613,12 +651,12 @@
                   <rect x="25" y="5" width="70" height="80" rx="8" fill="#0f0f1a" stroke="#252538" stroke-width="1.5"/>
                   <rect x="30" y="12" width="60" height="5" rx="2" fill="#252538"/>
                   <rect x="30" y="12" width="40" height="5" rx="2" fill="#7c6aff" opacity="0.7" class="progress-bar-anim"/>
-                  <text x="60" y="28" text-anchor="middle" font-size="6" fill="#7c6aff" font-family="sans-serif" letter-spacing="1">QUESTION 2 OF 3</text>
+                  
                   <rect x="30" y="30" width="60" height="20" rx="4" fill="#171726" stroke="#252538"/>
-                  <text x="60" y="42" text-anchor="middle" font-size="7" fill="#eeeef8" font-family="sans-serif" opacity="0.9">What skills will teams</text>
-                  <text x="60" y="50" text-anchor="middle" font-size="7" fill="#eeeef8" font-family="sans-serif" opacity="0.9">need most?</text>
+                  
+                  
                   <rect x="30" y="56" width="60" height="12" rx="3" fill="#171726" stroke="#252538"/>
-                  <text x="60" y="65" text-anchor="middle" font-size="6" fill="#5a5a7a" font-family="sans-serif">✓ Response submitted</text>
+                  
                   <circle cx="42" cy="78" r="3" fill="#6affcb"/>
                   <circle cx="55" cy="78" r="3" fill="#7c6aff" opacity="0.5"/>
                   <circle cx="68" cy="78" r="3" fill="#252538"/>
@@ -705,34 +743,102 @@
 
   <!-- CREATE ROOM -->
   <div id="create-room" class="screen">
-    <div class="form-wrap">
-      <div class="form-card">
-        <div class="form-title">Host a Session</div>
-        <div class="field">
+    <div class="create-layout">
+      <!-- LEFT: Session details + question cards -->
+      <div class="create-main">
+        <div class="create-header">
+          <button class="btn btn-ghost btn-sm" onclick="showScreen('home')">← Back</button>
+          <div class="create-title">Host a Session</div>
+          <button class="btn btn-primary" onclick="createRoom()">Launch →</button>
+        </div>
+        <div class="field" style="max-width:600px;">
           <label>Session title</label>
           <input id="session-title" type="text" placeholder="e.g. Team Strategy Workshop"/>
         </div>
-        <div class="field">
-          <label>Questions</label>
-          <div class="slide-builder" id="slide-builder">
-            <div class="slide-item">
-              <div class="slide-item-header">
-                <span class="slide-num-badge">Question 1</span>
-                <button class="btn btn-ghost btn-sm" onclick="removeSlide(this)">Remove</button>
+        <div class="create-deck-label">Your questions</div>
+        <div class="slide-builder" id="slide-builder">
+          <div class="slide-item" data-type="cluster">
+            <div class="slide-item-header">
+              <div class="slide-item-left">
+                <div class="slide-type-icon">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="3" fill="#7c6aff"/>
+                    <circle cx="5" cy="7" r="2" fill="#7c6aff" opacity="0.6"/>
+                    <circle cx="19" cy="7" r="2" fill="#7c6aff" opacity="0.6"/>
+                    <circle cx="5" cy="17" r="2" fill="#7c6aff" opacity="0.6"/>
+                    <circle cx="19" cy="17" r="2" fill="#7c6aff" opacity="0.6"/>
+                    <line x1="12" y1="12" x2="5" y2="7" stroke="#7c6aff" stroke-width="1" opacity="0.4"/>
+                    <line x1="12" y1="12" x2="19" y2="7" stroke="#7c6aff" stroke-width="1" opacity="0.4"/>
+                    <line x1="12" y1="12" x2="5" y2="17" stroke="#7c6aff" stroke-width="1" opacity="0.4"/>
+                    <line x1="12" y1="12" x2="19" y2="17" stroke="#7c6aff" stroke-width="1" opacity="0.4"/>
+                  </svg>
+                </div>
+                <span class="slide-num-badge">Q1 · Idea Clusters</span>
               </div>
-              <input type="text" placeholder="Ask your audience something..." class="slide-question-input"/>
-              <select class="slide-type">
-                <option value="cluster">💬 Idea Clusters</option>
-                <option value="ranking">📊 Theme Ranking</option>
-                <option value="sentiment">❤️ Sentiment</option>
-              </select>
+              <button class="slide-delete-btn" onclick="removeSlide(this)" title="Remove">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="14" height="14">
+                  <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
             </div>
+            <input type="text" placeholder="Ask your audience something..." class="slide-question-input"/>
           </div>
-          <button class="add-slide-btn" onclick="addSlide()">＋ Add another question</button>
         </div>
         <div id="create-error" class="error-msg">Please add at least one question.</div>
-        <button class="btn btn-primary btn-full" onclick="createRoom()">Launch Session →</button>
-        <button class="btn btn-ghost btn-full" onclick="showScreen('home')">← Back</button>
+      </div>
+
+      <!-- RIGHT: Question type toolbar -->
+      <div class="create-toolbar">
+        <div class="toolbar-label">Add question type</div>
+        <div class="toolbar-types">
+          <button class="type-btn" onclick="addSlide('cluster')">
+            <div class="type-btn-icon">
+              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="4" fill="#7c6aff"/>
+                <circle cx="6" cy="9" r="3" fill="#7c6aff" opacity="0.5"/>
+                <circle cx="26" cy="9" r="3" fill="#7c6aff" opacity="0.5"/>
+                <circle cx="6" cy="23" r="3" fill="#7c6aff" opacity="0.5"/>
+                <circle cx="26" cy="23" r="3" fill="#7c6aff" opacity="0.5"/>
+                <line x1="16" y1="16" x2="6" y2="9" stroke="#7c6aff" stroke-width="1.5" opacity="0.35"/>
+                <line x1="16" y1="16" x2="26" y2="9" stroke="#7c6aff" stroke-width="1.5" opacity="0.35"/>
+                <line x1="16" y1="16" x2="6" y2="23" stroke="#7c6aff" stroke-width="1.5" opacity="0.35"/>
+                <line x1="16" y1="16" x2="26" y2="23" stroke="#7c6aff" stroke-width="1.5" opacity="0.35"/>
+              </svg>
+            </div>
+            <div class="type-btn-label">Idea Clusters</div>
+            <div class="type-btn-desc">Group similar responses by theme</div>
+          </button>
+
+          <button class="type-btn" onclick="addSlide('ranking')">
+            <div class="type-btn-icon">
+              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="22" width="6" height="7" rx="1.5" fill="#7c6aff" opacity="0.5"/>
+                <rect x="13" y="15" width="6" height="14" rx="1.5" fill="#7c6aff" opacity="0.75"/>
+                <rect x="22" y="8" width="6" height="21" rx="1.5" fill="#7c6aff"/>
+              </svg>
+            </div>
+            <div class="type-btn-label">Theme Ranking</div>
+            <div class="type-btn-desc">Rank themes by frequency of mention</div>
+          </button>
+
+          <button class="type-btn" onclick="addSlide('sentiment')">
+            <div class="type-btn-icon">
+              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="11" stroke="#7c6aff" stroke-width="1.5" opacity="0.4"/>
+                <path d="M10 19c1.5 2.5 10.5 2.5 12 0" stroke="#6affcb" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="11" cy="13" r="1.5" fill="#eeeef8"/>
+                <circle cx="21" cy="13" r="1.5" fill="#eeeef8"/>
+              </svg>
+            </div>
+            <div class="type-btn-label">Sentiment</div>
+            <div class="type-btn-desc">Read positive, neutral and concerned split</div>
+          </button>
+        </div>
+
+        <div class="toolbar-tip">
+          <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><circle cx="8" cy="8" r="7" stroke="#5a5a7a" stroke-width="1.2"/></svg>
+          Click a type to add a question to your session
+        </div>
       </div>
     </div>
   </div>
@@ -946,23 +1052,43 @@
   }
 
   // ---- SLIDE BUILDER ----
-  function addSlide() {
+  const TYPE_CONFIG = {
+    cluster: {
+      label: 'Idea Clusters',
+      icon: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" fill="#7c6aff"/><circle cx="5" cy="7" r="2" fill="#7c6aff" opacity="0.6"/><circle cx="19" cy="7" r="2" fill="#7c6aff" opacity="0.6"/><circle cx="5" cy="17" r="2" fill="#7c6aff" opacity="0.6"/><circle cx="19" cy="17" r="2" fill="#7c6aff" opacity="0.6"/><line x1="12" y1="12" x2="5" y2="7" stroke="#7c6aff" stroke-width="1" opacity="0.4"/><line x1="12" y1="12" x2="19" y2="7" stroke="#7c6aff" stroke-width="1" opacity="0.4"/><line x1="12" y1="12" x2="5" y2="17" stroke="#7c6aff" stroke-width="1" opacity="0.4"/><line x1="12" y1="12" x2="19" y2="17" stroke="#7c6aff" stroke-width="1" opacity="0.4"/></svg>`
+    },
+    ranking: {
+      label: 'Theme Ranking',
+      icon: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="17" width="5" height="5" rx="1" fill="#7c6aff" opacity="0.5"/><rect x="10" y="11" width="5" height="11" rx="1" fill="#7c6aff" opacity="0.75"/><rect x="17" y="5" width="5" height="17" rx="1" fill="#7c6aff"/></svg>`
+    },
+    sentiment: {
+      label: 'Sentiment',
+      icon: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="#7c6aff" stroke-width="1.5" opacity="0.4"/><path d="M8 15c1 2 7 2 8 0" stroke="#6affcb" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="10" r="1.2" fill="#eeeef8"/><circle cx="15" cy="10" r="1.2" fill="#eeeef8"/></svg>`
+    }
+  }
+
+  function addSlide(type) {
+    type = type || 'cluster'
     slideCount++
+    const cfg = TYPE_CONFIG[type]
     const builder = document.getElementById('slide-builder')
     const div = document.createElement('div')
     div.className = 'slide-item'
+    div.dataset.type = type
     div.innerHTML = `
       <div class="slide-item-header">
-        <span class="slide-num-badge">Question ${slideCount}</span>
-        <button class="btn btn-ghost btn-sm" onclick="removeSlide(this)">Remove</button>
+        <div class="slide-item-left">
+          <div class="slide-type-icon">${cfg.icon}</div>
+          <span class="slide-num-badge">Q${slideCount} · ${cfg.label}</span>
+        </div>
+        <button class="slide-delete-btn" onclick="removeSlide(this)" title="Remove">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="14" height="14"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
       </div>
-      <input type="text" placeholder="Ask your audience something..." class="slide-question-input"/>
-      <select class="slide-type">
-        <option value="cluster">💬 Idea Clusters</option>
-        <option value="ranking">📊 Theme Ranking</option>
-        <option value="sentiment">❤️ Sentiment</option>
-      </select>`
+      <input type="text" placeholder="Ask your audience something..." class="slide-question-input"/>`
     builder.appendChild(div)
+    div.querySelector('.slide-question-input').focus()
+    showToast(`${cfg.label} question added`)
   }
 
   function removeSlide(btn) {
@@ -970,7 +1096,7 @@
     if (items.length <= 1) { showToast('Need at least one question!'); return }
     btn.closest('.slide-item').remove()
     document.querySelectorAll('.slide-item').forEach((item, i) => {
-      item.querySelector('.slide-num-badge').textContent = `Question ${i + 1}`
+      item.querySelector('.slide-num-badge').textContent = `Q${i + 1} · ${TYPE_CONFIG[item.dataset.type]?.label || 'Question'}`
     })
     slideCount = document.querySelectorAll('.slide-item').length
   }
@@ -980,7 +1106,7 @@
     const errEl = document.getElementById('create-error')
     const questions = Array.from(document.querySelectorAll('.slide-item')).map(item => ({
       question: item.querySelector('.slide-question-input').value.trim(),
-      type: item.querySelector('.slide-type').value
+      type: item.dataset.type || 'cluster'
     })).filter(s => s.question)
     if (questions.length === 0) { errEl.style.display = 'block'; return }
     errEl.style.display = 'none'
