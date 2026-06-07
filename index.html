@@ -2117,29 +2117,13 @@ Analyse both sides. Return JSON only:
   }
 
   async function moderateContent(text) {
-    // Quick client-side check for obvious violations first
-    const blocked = ['fuck','shit','cunt','dick','cock','pussy','ass','bitch','whore','nigger','faggot']
+    // Client-side blocklist only - fast and reliable
+    const blocked = ['fuck','shit','cunt','dick','cock','pussy','ass','bitch','whore','nigger','faggot','asshole','bastard']
     const lower = text.toLowerCase()
-    if (blocked.some(w => lower.includes(w))) return true
-
-    // For longer content, use AI moderation
-    if (text.length > 20) {
-      try {
-        const res = await fetch("/api/cluster", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "claude-haiku-4-5-20251001",
-            max_tokens: 10,
-            messages: [{ role: "user", content: `Is this text inappropriate, offensive, sexually explicit, or harmful for a professional business setting? Answer only YES or NO: "${text}"` }]
-          })
-        })
-        const data = await res.json()
-        const answer = data.content?.[0]?.text?.trim().toUpperCase() || 'NO'
-        return answer.startsWith('YES')
-      } catch(e) { return false }
-    }
-    return false
+    return blocked.some(w => {
+      const regex = new RegExp('\\b' + w + '\\b', 'i')
+      return regex.test(lower)
+    })
   }
 
   window.addEventListener('load', () => {
