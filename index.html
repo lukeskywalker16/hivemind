@@ -828,46 +828,34 @@
         <div class="toolbar-label">Add question type</div>
         <div class="toolbar-types">
           <button class="type-btn" onclick="addSlide('cluster')">
-            <div class="type-btn-icon">
-              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="16" cy="16" r="4" fill="#7c6aff"/>
-                <circle cx="6" cy="9" r="3" fill="#7c6aff" opacity="0.5"/>
-                <circle cx="26" cy="9" r="3" fill="#7c6aff" opacity="0.5"/>
-                <circle cx="6" cy="23" r="3" fill="#7c6aff" opacity="0.5"/>
-                <circle cx="26" cy="23" r="3" fill="#7c6aff" opacity="0.5"/>
-                <line x1="16" y1="16" x2="6" y2="9" stroke="#7c6aff" stroke-width="1.5" opacity="0.35"/>
-                <line x1="16" y1="16" x2="26" y2="9" stroke="#7c6aff" stroke-width="1.5" opacity="0.35"/>
-                <line x1="16" y1="16" x2="6" y2="23" stroke="#7c6aff" stroke-width="1.5" opacity="0.35"/>
-                <line x1="16" y1="16" x2="26" y2="23" stroke="#7c6aff" stroke-width="1.5" opacity="0.35"/>
-              </svg>
-            </div>
+            <div class="type-btn-icon" id="icon-cluster"></div>
             <div class="type-btn-label">Idea Clusters</div>
             <div class="type-btn-desc">Group similar responses by theme</div>
           </button>
-
           <button class="type-btn" onclick="addSlide('ranking')">
-            <div class="type-btn-icon">
-              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="22" width="6" height="7" rx="1.5" fill="#7c6aff" opacity="0.5"/>
-                <rect x="13" y="15" width="6" height="14" rx="1.5" fill="#7c6aff" opacity="0.75"/>
-                <rect x="22" y="8" width="6" height="21" rx="1.5" fill="#7c6aff"/>
-              </svg>
-            </div>
+            <div class="type-btn-icon" id="icon-ranking"></div>
             <div class="type-btn-label">Theme Ranking</div>
-            <div class="type-btn-desc">Rank themes by frequency of mention</div>
+            <div class="type-btn-desc">Rank themes by frequency</div>
           </button>
-
           <button class="type-btn" onclick="addSlide('sentiment')">
-            <div class="type-btn-icon">
-              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="16" cy="16" r="11" stroke="#7c6aff" stroke-width="1.5" opacity="0.4"/>
-                <path d="M10 19c1.5 2.5 10.5 2.5 12 0" stroke="#6affcb" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="11" cy="13" r="1.5" fill="#eeeef8"/>
-                <circle cx="21" cy="13" r="1.5" fill="#eeeef8"/>
-              </svg>
-            </div>
+            <div class="type-btn-icon" id="icon-sentiment"></div>
             <div class="type-btn-label">Sentiment</div>
-            <div class="type-btn-desc">Read positive, neutral and concerned split</div>
+            <div class="type-btn-desc">Positive, neutral, concerned split</div>
+          </button>
+          <button class="type-btn" onclick="addSlide('deepdive')">
+            <div class="type-btn-icon" id="icon-deepdive"></div>
+            <div class="type-btn-label">Deep Dive</div>
+            <div class="type-btn-desc">Qualitative analysis of longer responses</div>
+          </button>
+          <button class="type-btn" onclick="addSlide('rateit')">
+            <div class="type-btn-icon" id="icon-rateit"></div>
+            <div class="type-btn-label">Rate It</div>
+            <div class="type-btn-desc">Score 1-10, see average and spread</div>
+          </button>
+          <button class="type-btn" onclick="addSlide('foragainst')">
+            <div class="type-btn-icon" id="icon-foragainst"></div>
+            <div class="type-btn-label">For & Against</div>
+            <div class="type-btn-desc">Split the room, see both sides</div>
           </button>
         </div>
 
@@ -1082,6 +1070,14 @@
   }
 
   // Restore theme on load
+  // Inject toolbar icons from TYPE_CONFIG
+  window.addEventListener('DOMContentLoaded', () => {
+    Object.entries(TYPE_CONFIG).forEach(([type, cfg]) => {
+      const el = document.getElementById('icon-' + type)
+      if (el) el.innerHTML = cfg.icon
+    })
+  })
+
   window.addEventListener('load', () => {
     if (localStorage.getItem('agora_theme') === 'light') {
       document.body.classList.add('light-mode')
@@ -1120,15 +1116,33 @@
   const TYPE_CONFIG = {
     cluster: {
       label: 'Idea Clusters',
-      icon: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" fill="#7c6aff"/><circle cx="5" cy="7" r="2" fill="#7c6aff" opacity="0.6"/><circle cx="19" cy="7" r="2" fill="#7c6aff" opacity="0.6"/><circle cx="5" cy="17" r="2" fill="#7c6aff" opacity="0.6"/><circle cx="19" cy="17" r="2" fill="#7c6aff" opacity="0.6"/><line x1="12" y1="12" x2="5" y2="7" stroke="#7c6aff" stroke-width="1" opacity="0.4"/><line x1="12" y1="12" x2="19" y2="7" stroke="#7c6aff" stroke-width="1" opacity="0.4"/><line x1="12" y1="12" x2="5" y2="17" stroke="#7c6aff" stroke-width="1" opacity="0.4"/><line x1="12" y1="12" x2="19" y2="17" stroke="#7c6aff" stroke-width="1" opacity="0.4"/></svg>`
+      desc: 'Group similar responses by theme',
+      icon: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" fill="var(--accent)"/><circle cx="5" cy="7" r="2" fill="var(--accent)" opacity="0.6"/><circle cx="19" cy="7" r="2" fill="var(--accent)" opacity="0.6"/><circle cx="5" cy="17" r="2" fill="var(--accent)" opacity="0.6"/><circle cx="19" cy="17" r="2" fill="var(--accent)" opacity="0.6"/><line x1="12" y1="12" x2="5" y2="7" stroke="var(--accent)" stroke-width="1" opacity="0.4"/><line x1="12" y1="12" x2="19" y2="7" stroke="var(--accent)" stroke-width="1" opacity="0.4"/><line x1="12" y1="12" x2="5" y2="17" stroke="var(--accent)" stroke-width="1" opacity="0.4"/><line x1="12" y1="12" x2="19" y2="17" stroke="var(--accent)" stroke-width="1" opacity="0.4"/></svg>`
     },
     ranking: {
       label: 'Theme Ranking',
-      icon: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="17" width="5" height="5" rx="1" fill="#7c6aff" opacity="0.5"/><rect x="10" y="11" width="5" height="11" rx="1" fill="#7c6aff" opacity="0.75"/><rect x="17" y="5" width="5" height="17" rx="1" fill="#7c6aff"/></svg>`
+      desc: 'Rank themes by frequency of mention',
+      icon: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="17" width="5" height="5" rx="1" fill="var(--accent)" opacity="0.5"/><rect x="10" y="11" width="5" height="11" rx="1" fill="var(--accent)" opacity="0.75"/><rect x="17" y="5" width="5" height="17" rx="1" fill="var(--accent)"/></svg>`
     },
     sentiment: {
       label: 'Sentiment',
-      icon: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="#7c6aff" stroke-width="1.5" opacity="0.4"/><path d="M8 15c1 2 7 2 8 0" stroke="#6affcb" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="10" r="1.2" fill="#eeeef8"/><circle cx="15" cy="10" r="1.2" fill="#eeeef8"/></svg>`
+      desc: 'Read positive, neutral and concerned split',
+      icon: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="var(--accent)" stroke-width="1.5" opacity="0.4"/><path d="M8 15c1 2 7 2 8 0" stroke="#6affcb" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="10" r="1.2" fill="var(--text)"/><circle cx="15" cy="10" r="1.2" fill="var(--text)"/></svg>`
+    },
+    deepdive: {
+      label: 'Deep Dive',
+      desc: 'Qualitative analysis of longer responses',
+      icon: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a10 10 0 0 1 0 20" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/><path d="M12 2a10 10 0 0 0 0 20" stroke="var(--accent2)" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="3" fill="var(--accent)"/><line x1="12" y1="9" x2="12" y2="4" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"/></svg>`
+    },
+    rateit: {
+      label: 'Rate It',
+      desc: 'Score 1-10, see average and distribution',
+      icon: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" stroke="var(--accent2)" stroke-width="1.5" stroke-linejoin="round" fill="var(--accent2)" opacity="0.8"/></svg>`
+    },
+    foragainst: {
+      label: 'For & Against',
+      desc: 'Split the room, see both sides',
+      icon: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="4" width="9" height="16" rx="2" fill="var(--accent3)" opacity="0.7"/><rect x="13" y="4" width="9" height="16" rx="2" fill="var(--accent2)" opacity="0.7"/><line x1="12" y1="2" x2="12" y2="22" stroke="var(--border)" stroke-width="1.5"/></svg>`
     }
   }
 
@@ -1270,11 +1284,21 @@
     const slide = slides[currentSlideIndex]
     const responseTexts = allResponses.map(r => r.content).join('\n')
     const isRanking = slide.type === 'ranking'
+    const isDeepDive = slide.type === 'deepdive'
+    const isRateIt = slide.type === 'rateit'
+    const isForAgainst = slide.type === 'foragainst'
+
+    // Route to specialised handlers
+    if (isDeepDive) { runDeepDive(slide, responseTexts); return }
+    if (isRateIt) { runRateIt(slide, responseTexts); return }
+    if (isForAgainst) { runForAgainst(slide, responseTexts); return }
 
     const prompt = `You are analysing live brainstorm responses.
 Host question: "${slide.question}"
 Responses:
 ${responseTexts}
+
+IMPORTANT RULE: Treat every response as valid and intentional. Never create a cluster labelled "unclear", "typos", "unknown" or similar. Participants may reference new businesses, local venues, niche brands, abbreviations or terms you don't recognise — cluster these alongside similar responses or as their own legitimate cluster with a descriptive label based on what they likely mean.
 
 First, decide which TWO secondary panels are most relevant for this question:
 - "sentiment" (positive/neutral/concerned split) — use when question involves feelings, opinions, or attitudes
@@ -1467,6 +1491,165 @@ Keep it to 3 sentences max. Be specific — cite a real source or index if you k
     }
   }
 
+  // ---- DEEP DIVE ----
+  async function runDeepDive(slide, responseTexts) {
+    document.getElementById('insights-dashboard').style.display = 'grid'
+    document.getElementById('waiting-dashboard').style.display = 'none'
+    document.getElementById('clusters-panel-title').textContent = 'Key Points'
+    document.getElementById('ai-thinking').style.display = 'flex'
+    document.getElementById('ai-synthesis-text').classList.remove('visible')
+
+    const prompt = `You are analysing qualitative responses from a live session.
+Host question: "${slide.question}"
+Responses:
+${responseTexts}
+
+Provide a thoughtful qualitative analysis. Return JSON only:
+{
+  "summary": "One paragraph (4-6 sentences) synthesising what the group collectively said. Read across all responses and identify the dominant narrative.",
+  "keypoints": ["Key point 1", "Key point 2", "Key point 3", "Key point 4"],
+  "outlier": "One response that offers a notably different or interesting perspective, or null if none.",
+  "panel_a": { "type": "consensus", "title": "Group Alignment", "consensus_score": 65 },
+  "panel_b": { "type": "standout", "title": "Notable Perspective", "quote": "most interesting response verbatim", "why": "one sentence why it stands out" }
+}`
+
+    try {
+      const res = await fetch("/api/cluster", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 1000, messages: [{ role: "user", content: prompt }] }) })
+      const data = await res.json()
+      const parsed = JSON.parse(data.content?.[0]?.text?.replace(/\`\`\`json|\`\`\`/g, '').trim() || '{}')
+
+      // Show summary in synthesis panel
+      const synthEl = document.getElementById('ai-synthesis-text')
+      synthEl.textContent = parsed.summary || ''
+      document.getElementById('ai-thinking').style.display = 'none'
+      setTimeout(() => synthEl.classList.add('visible'), 50)
+
+      // Show key points as clusters
+      const grid = document.getElementById('clusters-grid')
+      grid.innerHTML = ''
+      if (parsed.keypoints) {
+        parsed.keypoints.forEach((point, i) => {
+          const card = document.createElement('div')
+          card.className = 'cluster-card top'
+          card.style.animationDelay = i * 0.1 + 's'
+          card.innerHTML = `<div class="cluster-title"><div class="cluster-name">✦ Point ${i+1}</div></div><div style="font-size:0.88rem;color:var(--text);line-height:1.5;">${point}</div>`
+          grid.appendChild(card)
+        })
+      }
+      document.getElementById('cluster-count').textContent = parsed.keypoints?.length || 0
+      if (parsed.panel_a || parsed.panel_b) updateDynamicPanels(parsed)
+    } catch(e) { console.error('Deep dive error:', e) }
+  }
+
+  // ---- RATE IT ----
+  async function runRateIt(slide, responseTexts) {
+    document.getElementById('insights-dashboard').style.display = 'grid'
+    document.getElementById('waiting-dashboard').style.display = 'none'
+    document.getElementById('clusters-panel-title').textContent = 'Score Distribution'
+
+    const scores = allResponses.map(r => parseFloat(r.content)).filter(n => !isNaN(n))
+    if (scores.length === 0) return
+
+    const avg = (scores.reduce((a,b) => a+b, 0) / scores.length).toFixed(1)
+    const min = Math.min(...scores)
+    const max = Math.max(...scores)
+    const polarised = (max - min) >= 6
+
+    // Show average in synthesis
+    const synthEl = document.getElementById('ai-synthesis-text')
+    document.getElementById('ai-thinking').style.display = 'none'
+    synthEl.textContent = `The group gave an average score of ${avg}/10. ${polarised ? 'Responses are highly polarised — the group is divided on this.' : 'The group shows reasonable alignment on this.'} Scores range from ${min} to ${max}.`
+    setTimeout(() => synthEl.classList.add('visible'), 50)
+
+    // Distribution chart
+    const grid = document.getElementById('clusters-grid')
+    grid.innerHTML = ''
+    const buckets = { '1-2': 0, '3-4': 0, '5-6': 0, '7-8': 0, '9-10': 0 }
+    scores.forEach(s => {
+      if (s <= 2) buckets['1-2']++
+      else if (s <= 4) buckets['3-4']++
+      else if (s <= 6) buckets['5-6']++
+      else if (s <= 8) buckets['7-8']++
+      else buckets['9-10']++
+    })
+    const maxBucket = Math.max(...Object.values(buckets))
+    const wrap = document.createElement('div')
+    wrap.className = 'chart-wrap'; wrap.style.width = '100%'
+    Object.entries(buckets).forEach(([label, count], i) => {
+      const pct = maxBucket > 0 ? Math.round((count / maxBucket) * 100) : 0
+      const colors = ['var(--accent2)', 'var(--accent2)', 'var(--accent)', 'var(--accent3)', 'var(--accent3)']
+      const row = document.createElement('div')
+      row.className = 'chart-bar-row'
+      row.innerHTML = `<div class="chart-bar-label">${label}</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:0%;background:${colors[i]}"><span class="chart-bar-count">${count}</span></div></div>`
+      wrap.appendChild(row)
+      setTimeout(() => { row.querySelector('.chart-bar-fill').style.width = pct + '%' }, 100 + i * 80)
+    })
+    grid.appendChild(wrap)
+    document.getElementById('cluster-count').textContent = scores.length
+
+    // Dynamic panels
+    updateDynamicPanels({
+      panel_a: { type: 'consensus', title: 'Group Alignment', consensus_score: Math.round(100 - ((max-min)/9)*100) },
+      panel_b: { type: 'standout', title: 'Average Score', quote: avg + ' / 10', why: polarised ? 'High polarisation — consider exploring why the group is divided.' : 'The group is reasonably aligned on this.' }
+    })
+  }
+
+  // ---- FOR & AGAINST ----
+  async function runForAgainst(slide, responseTexts) {
+    document.getElementById('insights-dashboard').style.display = 'grid'
+    document.getElementById('waiting-dashboard').style.display = 'none'
+    document.getElementById('clusters-panel-title').textContent = 'The Debate'
+    document.getElementById('ai-thinking').style.display = 'flex'
+    document.getElementById('ai-synthesis-text').classList.remove('visible')
+
+    const prompt = `You are analysing a For & Against debate from a live session.
+Question: "${slide.question}"
+Responses (participants prefixed their response with For: or Against:):
+${responseTexts}
+
+Analyse both sides. Return JSON only:
+{
+  "for_count": 5,
+  "against_count": 3,
+  "for_points": ["Top argument for 1", "Top argument for 2"],
+  "against_points": ["Top argument against 1", "Top argument against 2"],
+  "summary": "2-3 sentence balanced synthesis of both sides.",
+  "panel_a": { "type": "sentiment", "title": "Split", "sentiment": {"positive": 60, "neutral": 0, "concerned": 40} },
+  "panel_b": { "type": "standout", "title": "Strongest Argument", "quote": "most compelling argument verbatim", "why": "why this argument stands out" }
+}`
+
+    try {
+      const res = await fetch("/api/cluster", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 800, messages: [{ role: "user", content: prompt }] }) })
+      const data = await res.json()
+      const parsed = JSON.parse(data.content?.[0]?.text?.replace(/\`\`\`json|\`\`\`/g, '').trim() || '{}')
+
+      const synthEl = document.getElementById('ai-synthesis-text')
+      synthEl.textContent = parsed.summary || ''
+      document.getElementById('ai-thinking').style.display = 'none'
+      setTimeout(() => synthEl.classList.add('visible'), 50)
+
+      // Render for/against cards
+      const grid = document.getElementById('clusters-grid')
+      grid.innerHTML = ''
+      const forCard = document.createElement('div')
+      forCard.className = 'cluster-card'
+      forCard.style.borderColor = 'rgba(106,255,203,0.4)'
+      forCard.innerHTML = `
+        <div class="cluster-title"><div class="cluster-name" style="color:var(--accent3)">✦ For (${parsed.for_count || 0})</div></div>
+        ${(parsed.for_points || []).map(p => `<div style="font-size:0.85rem;color:var(--text);margin-bottom:0.4rem;padding-left:0.5rem;border-left:2px solid var(--accent3);">${p}</div>`).join('')}`
+      const againstCard = document.createElement('div')
+      againstCard.className = 'cluster-card'
+      againstCard.style.borderColor = 'rgba(255,176,32,0.4)'
+      againstCard.innerHTML = `
+        <div class="cluster-title"><div class="cluster-name" style="color:var(--accent2)">✦ Against (${parsed.against_count || 0})</div></div>
+        ${(parsed.against_points || []).map(p => `<div style="font-size:0.85rem;color:var(--text);margin-bottom:0.4rem;padding-left:0.5rem;border-left:2px solid var(--accent2);">${p}</div>`).join('')}`
+      grid.appendChild(forCard)
+      grid.appendChild(againstCard)
+      document.getElementById('cluster-count').textContent = (parsed.for_count || 0) + (parsed.against_count || 0)
+      if (parsed.panel_a || parsed.panel_b) updateDynamicPanels(parsed)
+    } catch(e) { console.error('For/Against error:', e) }
+  }
+
   // ---- END SESSION ----
   async function endSession() {
     const overlay = document.getElementById('final-summary-overlay')
@@ -1542,7 +1725,28 @@ Keep it to 3 sentences max. Be specific — cite a real source or index if you k
     const slide = slides[currentSlideIndex]
     document.getElementById('p-slide-indicator').textContent = `Question ${currentSlideIndex + 1} of ${slides.length}`
     document.getElementById('p-question').textContent = slide.question
-    document.getElementById('p-question-type').textContent = slide.type === 'cluster' ? 'Share your ideas — all responses welcome' : slide.type === 'ranking' ? 'What are the key themes you see?' : 'Share how you feel about this'
+    const typeHints = {
+      cluster: 'Share your idea — one thought per submission',
+      ranking: 'What key themes or priorities do you see?',
+      sentiment: 'Share how you feel about this',
+      deepdive: 'Write 1-2 sentences sharing your perspective',
+      rateit: 'Enter a score from 1 (low) to 10 (high)',
+      foragainst: 'Type "For:" or "Against:" followed by your reason'
+    }
+    document.getElementById('p-question-type').textContent = typeHints[slide.type] || 'Share your response'
+    
+    // Update input placeholder based on type
+    const input = document.getElementById('response-input')
+    const placeholders = {
+      cluster: 'Share your idea...',
+      ranking: 'Name a key theme...',
+      sentiment: 'Describe how you feel...',
+      deepdive: 'Write your response (1-2 sentences)...',
+      rateit: 'Enter a number 1-10...',
+      foragainst: 'For: [reason] or Against: [reason]'
+    }
+    if (input) input.placeholder = placeholders[slide.type] || 'Share your response...'
+    
     const dotsEl = document.getElementById('p-progress')
     dotsEl.innerHTML = slides.map((_, i) => `<div class="p-progress-dot ${i < currentSlideIndex ? 'done' : i === currentSlideIndex ? 'active' : ''}"></div>`).join('')
   }
@@ -1567,14 +1771,55 @@ Keep it to 3 sentences max. Be specific — cite a real source or index if you k
 
   async function submitResponse() {
     const input = document.getElementById('response-input')
-    const content = input.value.trim()
-    if (!content || !currentRoom) return
-    const { error } = await db.from('responses').insert({ room_id: currentRoom.id, content, slide_index: currentSlideIndex })
+    const text = input.value.trim()
+    if (!text || !currentRoom) return
+
+    // Basic validation for Rate It
+    const slide = slides[currentSlideIndex]
+    if (slide.type === 'rateit') {
+      const num = parseFloat(text)
+      if (isNaN(num) || num < 1 || num > 10) { showToast('Please enter a number between 1 and 10'); return }
+    }
+
+    // Content moderation
+    const flagged = await moderateContent(text)
+    if (flagged) {
+      showToast('Response flagged as inappropriate. Please keep it professional.')
+      return
+    }
+
+    const { error } = await db.from('responses').insert({ room_id: currentRoom.id, content: text, slide_index: currentSlideIndex })
     if (error) { showToast('Error submitting.'); return }
     const list = document.getElementById('submitted-list')
     const item = document.createElement('div')
-    item.className = 'submitted-item'; item.textContent = content
+    item.className = 'submitted-item'; item.textContent = text
     list.prepend(item); input.value = ''; showToast('Submitted!')
+  }
+
+  async function moderateContent(text) {
+    // Quick client-side check for obvious violations first
+    const blocked = ['fuck','shit','cunt','dick','cock','pussy','ass','bitch','whore','nigger','faggot']
+    const lower = text.toLowerCase()
+    if (blocked.some(w => lower.includes(w))) return true
+
+    // For longer content, use AI moderation
+    if (text.length > 20) {
+      try {
+        const res = await fetch("/api/cluster", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "claude-haiku-4-5-20251001",
+            max_tokens: 10,
+            messages: [{ role: "user", content: `Is this text inappropriate, offensive, sexually explicit, or harmful for a professional business setting? Answer only YES or NO: "${text}"` }]
+          })
+        })
+        const data = await res.json()
+        const answer = data.content?.[0]?.text?.trim().toUpperCase() || 'NO'
+        return answer.startsWith('YES')
+      } catch(e) { return false }
+    }
+    return false
   }
 
   window.addEventListener('load', () => {
