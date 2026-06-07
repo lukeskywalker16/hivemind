@@ -22,6 +22,22 @@
       --muted: #5a5a7a;
       --radius: 12px;
     }
+    body.light-mode {
+      --bg: #f4f4f8;
+      --surface: #ffffff;
+      --surface2: #eeeef4;
+      --border: #d8d8e8;
+      --accent: #6a56f0;
+      --accent2: #e8407a;
+      --accent3: #00b87a;
+      --text: #111128;
+      --muted: #8888aa;
+    }
+    body.light-mode nav { background: var(--bg); }
+    body.light-mode .home-title { color: var(--text); }
+    body.light-mode input, body.light-mode textarea, body.light-mode select { color: var(--text); }
+    .theme-toggle { background: transparent; border: 1px solid var(--border); border-radius: 8px; padding: 0.4rem; cursor: pointer; color: var(--muted); transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+    .theme-toggle:hover { color: var(--text); border-color: var(--accent); box-shadow: 0 0 8px rgba(124,106,255,0.2); }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
@@ -274,6 +290,12 @@
     .standout-quote { font-size: 1rem; line-height: 1.65; color: var(--text); font-weight: 300; font-style: italic; padding-left: 1rem; border-left: 2px solid var(--accent); opacity: 0; transition: opacity 0.8s ease; }
     .standout-quote.visible { opacity: 1; }
 
+    /* RESEARCH */
+    .research-divider { display: flex; align-items: center; gap: 0.75rem; margin: 0.75rem 0 0.6rem; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent3); font-weight: 600; }
+    .research-divider::before, .research-divider::after { content: ''; flex: 1; height: 1px; background: rgba(106,255,203,0.2); }
+    .research-text { font-size: 0.88rem; line-height: 1.65; color: var(--muted); font-weight: 300; animation: fadeUp 0.5s ease; }
+    .research-text strong { color: var(--text); }
+
     /* WAITING */
     .waiting-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; padding: 2rem; text-align: center; color: var(--muted); }
     .spinner { width: 24px; height: 24px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
@@ -359,6 +381,15 @@
     <span class="nav-logo" onclick="goHome()">AgoraAI<span class="nav-dot"></span></span>
     <div class="nav-right">
       <button class="btn btn-ghost btn-sm" onclick="showScreen('history')">Past Sessions</button>
+      <button class="theme-toggle" onclick="toggleTheme()" id="theme-toggle" title="Toggle light/dark mode">
+        <svg id="theme-icon-dark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+          <circle cx="12" cy="12" r="4" fill="currentColor"/>
+          <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <svg id="theme-icon-light" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16" style="display:none;">
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" fill="currentColor"/>
+        </svg>
+      </button>
     </div>
   </nav>
 
@@ -884,14 +915,23 @@
         <!-- AI Synthesis -->
         <div class="insight-panel wide highlight" id="panel-synthesis">
           <div class="insight-panel-header">
-            <div class="insight-panel-title">✦ AI Synthesis</div>
-            <div class="insight-panel-badge">Auto-updating</div>
+            <div style="display:flex;align-items:center;gap:0.6rem;">
+              <div class="insight-panel-title">✦ AI Synthesis</div>
+              <div class="insight-panel-badge">Auto-updating</div>
+            </div>
+            <button class="btn btn-glow-green btn-sm" onclick="triggerResearch()" id="research-btn" style="font-size:0.78rem;padding:0.4rem 0.9rem;">🔍 Back it up</button>
           </div>
           <div id="ai-thinking" class="ai-thinking">
             <div class="spinner" style="width:16px;height:16px;"></div>
             <span>Analysing responses<span class="thinking-dots"><span>.</span><span>.</span><span>.</span></span></span>
           </div>
           <div class="ai-synthesis-text" id="ai-synthesis-text"></div>
+          <div class="research-result" id="research-result" style="display:none;">
+            <div class="research-divider">
+              <span>🔍 Research Context</span>
+            </div>
+            <div class="research-text" id="research-text"></div>
+          </div>
         </div>
 
         <!-- Clusters / Chart -->
@@ -905,23 +945,25 @@
           </div>
         </div>
 
-        <!-- Sentiment -->
-        <div class="insight-panel" id="panel-sentiment">
+        <!-- Dynamic Panel A -->
+        <div class="insight-panel" id="panel-dynamic-a">
           <div class="insight-panel-header">
-            <div class="insight-panel-title">Sentiment</div>
+            <div class="insight-panel-title" id="dynamic-a-title">Sentiment</div>
           </div>
-          <div class="sentiment-bars" id="sentiment-bars">
+          <div id="dynamic-a-content">
             <div class="waiting-state" style="padding:1rem;"><p style="font-size:0.82rem;">Building picture...</p></div>
           </div>
         </div>
 
-        <!-- Standout -->
-        <div class="insight-panel" id="panel-standout">
+        <!-- Dynamic Panel B / Standout -->
+        <div class="insight-panel" id="panel-dynamic-b">
           <div class="insight-panel-header">
-            <div class="insight-panel-title">Standout Response</div>
-            <div class="insight-panel-badge">AI picked</div>
+            <div class="insight-panel-title" id="dynamic-b-title">Standout Response</div>
+            <div class="insight-panel-badge" id="dynamic-b-badge">AI picked</div>
           </div>
-          <blockquote class="standout-quote" id="standout-quote"></blockquote>
+          <div id="dynamic-b-content">
+            <div class="waiting-state" style="padding:1rem;"><p style="font-size:0.82rem;">Analysing...</p></div>
+          </div>
         </div>
       </div>
 
@@ -1025,6 +1067,24 @@
     allResponses = []; allSessionResponses = {}
     showScreen('home')
   }
+
+  function toggleTheme() {
+    const body = document.body
+    const isDark = !body.classList.contains('light-mode')
+    body.classList.toggle('light-mode')
+    document.getElementById('theme-icon-dark').style.display = isDark ? 'none' : 'block'
+    document.getElementById('theme-icon-light').style.display = isDark ? 'block' : 'none'
+    localStorage.setItem('agora_theme', isDark ? 'light' : 'dark')
+  }
+
+  // Restore theme on load
+  window.addEventListener('load', () => {
+    if (localStorage.getItem('agora_theme') === 'light') {
+      document.body.classList.add('light-mode')
+      document.getElementById('theme-icon-dark').style.display = 'none'
+      document.getElementById('theme-icon-light').style.display = 'block'
+    }
+  })
 
   function showToast(msg) {
     const t = document.getElementById('toast')
@@ -1141,9 +1201,11 @@
     document.getElementById('ai-synthesis-text').textContent = ''
     document.getElementById('ai-synthesis-text').classList.remove('visible')
     document.getElementById('ai-thinking').style.display = 'flex'
-    document.getElementById('standout-quote').textContent = ''
-    document.getElementById('standout-quote').classList.remove('visible')
-    document.getElementById('sentiment-bars').innerHTML = `<div class="waiting-state" style="padding:1rem;"><p style="font-size:0.82rem;">Building picture...</p></div>`
+    document.getElementById('dynamic-a-content').innerHTML = `<div class="waiting-state" style="padding:1rem;"><p style="font-size:0.82rem;">Building picture...</p></div>`
+    document.getElementById('dynamic-b-content').innerHTML = `<div class="waiting-state" style="padding:1rem;"><p style="font-size:0.82rem;">Analysing...</p></div>`
+    document.getElementById('research-result').style.display = 'none'
+    const resBtn = document.getElementById('research-btn')
+    if (resBtn) { resBtn.textContent = '🔍 Back it up'; resBtn.disabled = false; }
     clearTimeout(clusterTimeout)
   }
 
@@ -1205,28 +1267,47 @@
     const responseTexts = allResponses.map(r => r.content).join('\n')
     const isRanking = slide.type === 'ranking'
 
-    const prompt = `Analyse these live brainstorm responses to: "${slide.question}"
+    const prompt = `You are analysing live brainstorm responses.
+Host question: "${slide.question}"
 Responses:
 ${responseTexts}
 
+First, decide which TWO secondary panels are most relevant for this question:
+- "sentiment" (positive/neutral/concerned split) — use when question involves feelings, opinions, or attitudes
+- "consensus" (how aligned is the group, 0-100%) — use when question has right/wrong answers or clear themes
+- "diversity" (how varied are the responses) — use when question is open-ended or creative
+- "geography" (if responses mention places) — use when question involves locations
+- "standout" (a single interesting outlier) — almost always useful
+
 Return JSON only:
 {
-  "clusters": [{"label":"name","items":["r1","r2"],"count":2,"insight":"optional for top clusters"}],
+  "clusters": [{"label":"name","items":["r1","r2"],"count":2,"insight":"optional for top clusters with 3+"}],
   "summary": "2-3 sentence synthesis of what the group is really saying.",
-  "standout": "The single most interesting or insightful response verbatim.",
-  "sentiment": {"positive": 40, "neutral": 35, "concerned": 25}
+  "panel_a": {
+    "type": "sentiment|consensus|diversity|geography",
+    "title": "Panel title",
+    "sentiment": {"positive":40,"neutral":35,"concerned":25},
+    "consensus_score": 72,
+    "diversity_note": "Brief note about response variety",
+    "geography_note": "Brief note about geographic spread"
+  },
+  "panel_b": {
+    "type": "standout",
+    "title": "Standout Response",
+    "quote": "The single most interesting or unexpected response verbatim.",
+    "why": "One sentence explaining why this response stands out."
+  }
 }`
 
     try {
-      const res = await fetch("/api/cluster", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 1200, messages: [{ role: "user", content: prompt }] }) })
+      const res = await fetch("/api/cluster", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 1400, messages: [{ role: "user", content: prompt }] }) })
       const data = await res.json()
       const text = data.content?.[0]?.text || ""
       const parsed = JSON.parse(text.replace(/```json|```/g, "").trim())
       if (isRanking) renderBarChart(parsed)
       else renderClusters(parsed)
       updateSynthesis(parsed)
-      updateSentiment(parsed.sentiment)
-      updateStandout(parsed.standout)
+      updateDynamicPanels(parsed)
     } catch(e) { console.error("Cluster error:", e) }
   }
 
@@ -1284,30 +1365,102 @@ Return JSON only:
     }
   }
 
-  function updateSentiment(sentiment) {
-    if (!sentiment) return
-    const bars = document.getElementById('sentiment-bars')
-    const items = [
-      { label: 'Positive', value: sentiment.positive || 0, color: 'var(--accent3)' },
-      { label: 'Neutral', value: sentiment.neutral || 0, color: 'var(--accent)' },
-      { label: 'Concerned', value: sentiment.concerned || 0, color: 'var(--accent2)' }
-    ]
-    bars.innerHTML = items.map(item => `
-      <div class="sentiment-row">
-        <div class="sentiment-label">${item.label}</div>
-        <div class="sentiment-track"><div class="sentiment-fill" style="width:0%;background:${item.color}" data-val="${item.value}"></div></div>
-        <div class="sentiment-count">${item.value}%</div>
-      </div>`).join('')
-    setTimeout(() => {
-      bars.querySelectorAll('.sentiment-fill').forEach(el => { el.style.width = el.dataset.val + '%' })
-    }, 100)
+  function updateDynamicPanels(data) {
+    // Panel A
+    const panelA = data.panel_a
+    if (panelA) {
+      document.getElementById('dynamic-a-title').textContent = panelA.title || 'Analysis'
+      const contentEl = document.getElementById('dynamic-a-content')
+
+      if (panelA.type === 'sentiment' && panelA.sentiment) {
+        const s = panelA.sentiment
+        const items = [
+          { label: 'Positive', value: s.positive || 0, color: 'var(--accent3)' },
+          { label: 'Neutral', value: s.neutral || 0, color: 'var(--accent)' },
+          { label: 'Concerned', value: s.concerned || 0, color: 'var(--accent2)' }
+        ]
+        contentEl.innerHTML = '<div class="sentiment-bars">' + items.map(item => `
+          <div class="sentiment-row">
+            <div class="sentiment-label">${item.label}</div>
+            <div class="sentiment-track"><div class="sentiment-fill" style="width:0%;background:${item.color}" data-val="${item.value}"></div></div>
+            <div class="sentiment-count">${item.value}%</div>
+          </div>`).join('') + '</div>'
+        setTimeout(() => contentEl.querySelectorAll('.sentiment-fill').forEach(el => el.style.width = el.dataset.val + '%'), 100)
+
+      } else if (panelA.type === 'consensus' && panelA.consensus_score !== undefined) {
+        const score = panelA.consensus_score
+        const color = score > 70 ? 'var(--accent3)' : score > 40 ? 'var(--accent)' : 'var(--accent2)'
+        contentEl.innerHTML = `
+          <div style="display:flex;flex-direction:column;gap:0.75rem;align-items:center;padding:0.5rem 0;">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:${color};line-height:1;">${score}%</div>
+            <div style="font-size:0.82rem;color:var(--muted);text-align:center;">group alignment</div>
+            <div style="width:100%;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;">
+              <div style="height:100%;width:0%;background:${color};border-radius:3px;transition:width 1s ease;" data-val="${score}"></div>
+            </div>
+          </div>`
+        setTimeout(() => { const bar = contentEl.querySelector('[data-val]'); if(bar) bar.style.width = score + '%' }, 100)
+
+      } else if (panelA.type === 'diversity') {
+        contentEl.innerHTML = `<div style="font-size:0.88rem;color:var(--muted);line-height:1.6;padding:0.25rem 0;">${panelA.diversity_note || 'Analysing response variety...'}</div>`
+
+      } else if (panelA.type === 'geography') {
+        contentEl.innerHTML = `<div style="font-size:0.88rem;color:var(--muted);line-height:1.6;padding:0.25rem 0;">${panelA.geography_note || 'Mapping response geography...'}</div>`
+      }
+    }
+
+    // Panel B - standout
+    const panelB = data.panel_b
+    if (panelB) {
+      document.getElementById('dynamic-b-title').textContent = panelB.title || 'Standout Response'
+      const badge = document.getElementById('dynamic-b-badge')
+      if (badge) badge.style.display = 'block'
+      const contentEl = document.getElementById('dynamic-b-content')
+      if (panelB.quote) {
+        contentEl.innerHTML = `
+          <blockquote class="standout-quote visible" style="opacity:0;transition:opacity 0.8s ease;">"${panelB.quote}"</blockquote>
+          ${panelB.why ? `<div style="margin-top:0.75rem;font-size:0.82rem;color:var(--muted);line-height:1.5;font-style:normal;">${panelB.why}</div>` : ''}
+        `
+        setTimeout(() => { const q = contentEl.querySelector('.standout-quote'); if(q) q.style.opacity = '1' }, 100)
+      }
+    }
   }
 
-  function updateStandout(quote) {
-    if (!quote) return
-    const el = document.getElementById('standout-quote')
-    el.textContent = `"${quote}"`
-    setTimeout(() => el.classList.add('visible'), 200)
+  // ---- RESEARCH ----
+  async function triggerResearch() {
+    if (allResponses.length === 0) { showToast('No responses yet!'); return }
+    const btn = document.getElementById('research-btn')
+    const resultEl = document.getElementById('research-result')
+    const textEl = document.getElementById('research-text')
+    btn.textContent = 'Searching...'
+    btn.disabled = true
+    resultEl.style.display = 'block'
+    textEl.textContent = 'Searching for relevant research and context...'
+
+    const slide = slides[currentSlideIndex]
+    const themes = [...new Set(allResponses.map(r => r.content))].slice(0, 15).join(', ')
+
+    const prompt = `You are a research assistant at a live workshop.
+Host question: "${slide.question}"
+Audience responses included: ${themes}
+
+Search your knowledge to find:
+1. A relevant real-world statistic, index, ranking, or research finding that relates to what the audience said
+2. Compare it briefly to the group's responses — do they align with the data, or is there an interesting difference?
+3. End with one sentence acknowledging that personal preferences and context always matter
+
+Keep it to 3 sentences max. Be specific — cite a real source or index if you know one. Be honest if you're uncertain.`
+
+    try {
+      const res = await fetch("/api/cluster", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 300, messages: [{ role: "user", content: prompt }] }) })
+      const data = await res.json()
+      const text = data.content?.[0]?.text || "Could not find relevant research."
+      textEl.innerHTML = text
+      btn.textContent = '✓ Research added'
+    } catch(e) {
+      textEl.textContent = "Error fetching research."
+      btn.textContent = '🔍 Back it up'
+      btn.disabled = false
+    }
   }
 
   // ---- END SESSION ----
