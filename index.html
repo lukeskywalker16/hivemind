@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AgoraAI — Your ideas, AI powered</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>/build/qrcode.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -977,7 +977,7 @@
 <div class="qr-modal" id="qr-modal" onclick="closeQR()">
   <div class="qr-card" onclick="event.stopPropagation()">
     <p style="color:#888;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;">Scan to join</p>
-    <canvas id="qr-canvas"></canvas>
+    <div id="qr-canvas"></canvas>
     <div class="qr-code-text" id="qr-code-display">—</div>
     <button class="qr-close" onclick="closeQR()">Close</button>
   </div>
@@ -1166,7 +1166,10 @@
   // ---- QR ----
   function showQR() {
     const url = `${window.location.origin}${window.location.pathname}?join=${currentRoom.code}`
-    QRCode.toCanvas(document.getElementById('qr-canvas'), url, { width: 220, margin: 2, color: { dark: '#111', light: '#fff' } })
+    const qr = qrcode(0, 'M')
+    qr.addData(url)
+    qr.make()
+    document.getElementById('qr-canvas').innerHTML = qr.createImgTag(4, 8)
     document.getElementById('qr-code-display').textContent = currentRoom.code
     document.getElementById('qr-modal').classList.add('visible')
   }
