@@ -10,28 +10,38 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --bg: #080810;
-      --surface: #0f0f1a;
-      --surface2: #171726;
-      --border: #252538;
-      --accent: #7c6aff;
-      --accent2: #ff6a9a;
+      --bg: #08080f;
+      --surface: #0e0e1c;
+      --surface2: #151528;
+      --border: #222240;
+      --accent: #5b4fff;
+      --accent2: #ffb020;
       --accent3: #6affcb;
-      --accent4: #ffcb6a;
+      --accent4: #ff6a9a;
       --text: #eeeef8;
       --muted: #5a5a7a;
       --radius: 12px;
     }
     body.light-mode {
-      --bg: #f4f4f8;
+      --bg: #f5f5fa;
       --surface: #ffffff;
-      --surface2: #eeeef4;
-      --border: #d8d8e8;
-      --accent: #6a56f0;
-      --accent2: #e8407a;
+      --surface2: #ebebf5;
+      --border: #d0d0e8;
+      --accent: #5b4fff;
+      --accent2: #ffb020;
       --accent3: #00b87a;
       --text: #111128;
-      --muted: #8888aa;
+      --muted: #7777aa;
+    }
+    body.light-mode .nav-logo {
+      background: linear-gradient(135deg, #111128, #5b4fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    body.light-mode .intro-logo {
+      background: linear-gradient(135deg, #111128, #5b4fff, #ffb020);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     body.light-mode nav { background: var(--bg); }
     body.light-mode .home-title { color: var(--text); }
@@ -44,7 +54,7 @@
     /* INTRO */
     #intro { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; gap: 1rem; animation: introFade 3.5s ease forwards; pointer-events: none; }
     @keyframes introFade { 0%, 60% { opacity: 1; } 100% { opacity: 0; } }
-    .intro-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(4rem, 15vw, 9rem); letter-spacing: 0.02em; background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, var(--accent2) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: logoReveal 1s cubic-bezier(0.16,1,0.3,1) forwards; opacity: 0; transform: translateY(20px); }
+    .intro-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(4rem, 15vw, 9rem); letter-spacing: 0.02em; background: linear-gradient(135deg, #fff 0%, #5b4fff 50%, #ffb020 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: logoReveal 1s cubic-bezier(0.16,1,0.3,1) forwards; opacity: 0; transform: translateY(20px); }
     @keyframes logoReveal { to { opacity: 1; transform: translateY(0); } }
     .intro-tagline { font-size: 0.9rem; font-weight: 300; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); animation: taglineReveal 1s 0.4s forwards; opacity: 0; }
     @keyframes taglineReveal { to { opacity: 1; } }
@@ -151,10 +161,10 @@
     /* BUTTONS */
     .btn { padding: 1rem 2rem; border-radius: var(--radius); border: none; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.25s; letter-spacing: 0.02em; }
     .btn-primary { background: var(--accent); color: white; }
-    .btn-primary:hover { background: #6a58e8; transform: translateY(-2px); box-shadow: 0 0 24px 6px rgba(124,106,255,0.4), 0 0 60px 12px rgba(124,106,255,0.15); }
-    .btn-primary:active { transform: translateY(0); box-shadow: 0 0 35px 8px rgba(124,106,255,0.55); }
+    .btn-primary:hover { background: #6a58e8; transform: translateY(-2px); box-shadow: 0 0 24px 6px rgba(91,79,255,0.4), 0 0 60px 12px rgba(91,79,255,0.15); }
+    .btn-primary:active { transform: translateY(0); box-shadow: 0 0 35px 8px rgba(91,79,255,0.55); }
     .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-    .btn-secondary:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 0 16px 3px rgba(124,106,255,0.2); }
+    .btn-secondary:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 0 16px 3px rgba(91,79,255,0.2); }
     .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 0.6rem 1.2rem; font-size: 0.88rem; }
     .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
     .btn-glow-green { background: transparent; color: var(--accent3); border: 1px solid rgba(106,255,203,0.3); padding: 0.6rem 1.4rem; font-size: 0.88rem; }
@@ -359,6 +369,10 @@
     .toast.show { transform: translateX(-50%) translateY(0); }
 
     @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes qrFloat { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-8px) rotate(3deg); } }
+    @keyframes tickPop { 0% { opacity:0; transform:translateX(-50%) scale(0.5); } 100% { opacity:1; transform:translateX(-50%) scale(1); } }
+    @keyframes ideaBubble { 0% { opacity:0; transform:translateY(10px) scale(0.8); } 100% { opacity:1; transform:translateY(0) scale(1); } }
+    @keyframes toastSlide { 0%,100% { opacity:0; transform:translateX(20px); } 20%,80% { opacity:1; transform:translateX(0); } }
 
     @media (max-width: 600px) {
       .slide-display { padding: 1.25rem; padding-bottom: 110px; }
@@ -636,39 +650,64 @@
           <div class="animated-steps">
 
             <div class="astep" data-step="1">
-              <div class="astep-visual">
-                <svg viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="30" y="5" width="60" height="80" rx="8" fill="#0f0f1a" stroke="#252538" stroke-width="1.5"/>
-                  <rect x="35" y="18" width="50" height="8" rx="3" fill="#171726" stroke="#252538" stroke-width="1"/>
-                  
-                  <rect x="35" y="32" width="50" height="14" rx="4" fill="#7c6aff"/>
-                  
-                  <circle cx="60" cy="65" r="8" fill="#171726" stroke="#252538"/>
-                  
-                </svg>
+              <div class="astep-visual p-step-visual" style="overflow:hidden;position:relative;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;">
+                <div class="p-step1-scene" style="position:relative;width:120px;height:140px;">
+                  <svg style="position:absolute;left:20px;top:10px;" viewBox="0 0 70 110" width="70" height="110" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="66" height="106" rx="10" fill="#0e0e1c" stroke="#222240" stroke-width="2"/>
+                    <rect x="8" y="14" width="54" height="82" rx="4" fill="#151528"/>
+                    <rect x="25" y="5" width="20" height="4" rx="2" fill="#222240"/>
+                    <circle cx="35" cy="100" r="4" fill="#222240"/>
+                    <rect x="12" y="30" width="46" height="6" rx="2" fill="#222240"/>
+                    <rect x="16" y="42" width="38" height="10" rx="3" fill="#151528" stroke="#5b4fff" stroke-width="1"/>
+                    <rect x="16" y="58" width="38" height="10" rx="3" fill="#5b4fff"/>
+                  </svg>
+                  <div class="p-qr-float" style="position:absolute;right:0;top:5px;animation:qrFloat 3s ease-in-out infinite;">
+                    <svg viewBox="0 0 50 50" width="50" height="50" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="50" height="50" rx="5" fill="white"/>
+                      <rect x="3" y="3" width="18" height="18" rx="1" fill="none" stroke="#111" stroke-width="1.5"/>
+                      <rect x="6" y="6" width="12" height="12" rx="0.5" fill="#111"/>
+                      <rect x="29" y="3" width="18" height="18" rx="1" fill="none" stroke="#111" stroke-width="1.5"/>
+                      <rect x="32" y="6" width="12" height="12" rx="0.5" fill="#111"/>
+                      <rect x="3" y="29" width="18" height="18" rx="1" fill="none" stroke="#111" stroke-width="1.5"/>
+                      <rect x="6" y="32" width="12" height="12" rx="0.5" fill="#111"/>
+                      <rect x="29" y="29" width="5" height="5" fill="#111"/>
+                      <rect x="36" y="29" width="5" height="5" fill="#111"/>
+                      <rect x="43" y="29" width="4" height="5" fill="#111"/>
+                      <rect x="29" y="36" width="5" height="5" fill="#111"/>
+                      <rect x="43" y="36" width="4" height="5" fill="#111"/>
+                      <rect x="29" y="43" width="5" height="4" fill="#111"/>
+                      <rect x="36" y="43" width="11" height="4" fill="#111"/>
+                    </svg>
+                  </div>
+                  <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);background:#6affcb;color:#0e0e1c;border-radius:10px;padding:2px 8px;font-size:10px;font-weight:700;animation:tickPop 1s 1.5s ease both;opacity:0;">✓ Joined</div>
+                </div>
               </div>
               <div class="astep-content">
                 <div class="astep-num">01</div>
                 <div class="astep-title">Join in seconds</div>
-                <div class="astep-desc">Enter the 6-character code your host shares, or scan their QR code. No account, no app, no friction — just tap Join and you're in the session instantly.</div>
+                <div class="astep-desc">Enter the 6-character code your host shares, or scan their QR code. No account, no app download — just tap Join and you're live in the session instantly.</div>
               </div>
             </div>
 
             <div class="astep astep-reverse" data-step="2">
-              <div class="astep-visual">
-                <svg viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="25" y="5" width="70" height="80" rx="8" fill="#0f0f1a" stroke="#252538" stroke-width="1.5"/>
-                  <rect x="30" y="14" width="60" height="22" rx="4" fill="#171726" stroke="#252538"/>
-                  
-                  
-                  <rect x="30" y="42" width="60" height="12" rx="3" fill="#171726" stroke="#7c6aff" stroke-width="1"/>
-                  
-                  <rect x="30" y="60" width="60" height="12" rx="4" fill="#7c6aff"/>
-                  
-                  <rect x="35" y="76" width="15" height="4" rx="2" fill="#6affcb" opacity="0.5"/>
-                  <rect x="53" y="76" width="15" height="4" rx="2" fill="#252538"/>
-                  <rect x="71" y="76" width="15" height="4" rx="2" fill="#252538"/>
-                </svg>
+              <div class="astep-visual p-step-visual" style="overflow:hidden;position:relative;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;">
+                <div style="position:relative;width:120px;height:140px;">
+                  <svg style="position:absolute;left:20px;top:10px;" viewBox="0 0 70 110" width="70" height="110" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="66" height="106" rx="10" fill="#0e0e1c" stroke="#222240" stroke-width="2"/>
+                    <rect x="8" y="14" width="54" height="82" rx="4" fill="#151528"/>
+                    <rect x="25" y="5" width="20" height="4" rx="2" fill="#222240"/>
+                    <circle cx="35" cy="100" r="4" fill="#222240"/>
+                    <rect x="12" y="18" width="46" height="16" rx="3" fill="#0e0e1c" stroke="#222240"/>
+                    <rect x="15" y="22" width="30" height="3" rx="1" fill="#222240"/>
+                    <rect x="15" y="27" width="22" height="3" rx="1" fill="#222240"/>
+                    <rect x="12" y="40" width="46" height="10" rx="3" fill="#0e0e1c" stroke="#5b4fff" stroke-width="1.5"/>
+                    <rect x="12" y="56" width="46" height="10" rx="3" fill="#5b4fff"/>
+                  </svg>
+                  <div style="position:absolute;top:8px;right:2px;background:rgba(91,79,255,0.15);border:1px solid rgba(91,79,255,0.3);border-radius:8px;padding:3px 7px;font-size:9px;color:#5b4fff;font-weight:600;animation:ideaBubble 2s 0.3s ease both;opacity:0;">Innovation</div>
+                  <div style="position:absolute;top:35px;right:0px;background:rgba(255,176,32,0.15);border:1px solid rgba(255,176,32,0.3);border-radius:8px;padding:3px 7px;font-size:9px;color:#ffb020;font-weight:600;animation:ideaBubble 2s 0.7s ease both;opacity:0;">Growth</div>
+                  <div style="position:absolute;top:60px;right:4px;background:rgba(106,255,203,0.15);border:1px solid rgba(106,255,203,0.3);border-radius:8px;padding:3px 7px;font-size:9px;color:#6affcb;font-weight:600;animation:ideaBubble 2s 1.1s ease both;opacity:0;">AI</div>
+                  <div style="position:absolute;bottom:10px;left:2px;background:rgba(91,79,255,0.1);border:1px solid rgba(91,79,255,0.2);border-radius:6px;padding:2px 6px;font-size:8px;color:#5b4fff;animation:ideaBubble 2s 0.5s ease both;opacity:0;">🔒 Anonymous</div>
+                </div>
               </div>
               <div class="astep-content">
                 <div class="astep-num">02</div>
@@ -678,1006 +717,34 @@
             </div>
 
             <div class="astep" data-step="3">
-              <div class="astep-visual">
-                <svg viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="25" y="5" width="70" height="80" rx="8" fill="#0f0f1a" stroke="#252538" stroke-width="1.5"/>
-                  <rect x="30" y="12" width="60" height="5" rx="2" fill="#252538"/>
-                  <rect x="30" y="12" width="40" height="5" rx="2" fill="#7c6aff" opacity="0.7" class="progress-bar-anim"/>
-                  
-                  <rect x="30" y="30" width="60" height="20" rx="4" fill="#171726" stroke="#252538"/>
-                  
-                  
-                  <rect x="30" y="56" width="60" height="12" rx="3" fill="#171726" stroke="#252538"/>
-                  
-                  <circle cx="42" cy="78" r="3" fill="#6affcb"/>
-                  <circle cx="55" cy="78" r="3" fill="#7c6aff" opacity="0.5"/>
-                  <circle cx="68" cy="78" r="3" fill="#252538"/>
-                </svg>
+              <div class="astep-visual p-step-visual" style="overflow:hidden;position:relative;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;">
+                <div style="position:relative;width:120px;height:140px;">
+                  <svg style="position:absolute;left:20px;top:10px;" viewBox="0 0 70 110" width="70" height="110" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="66" height="106" rx="10" fill="#0e0e1c" stroke="#222240" stroke-width="2"/>
+                    <rect x="8" y="14" width="54" height="82" rx="4" fill="#151528"/>
+                    <rect x="25" y="5" width="20" height="4" rx="2" fill="#222240"/>
+                    <circle cx="35" cy="100" r="4" fill="#222240"/>
+                    <rect x="12" y="18" width="46" height="4" rx="2" fill="#222240"/>
+                    <rect x="12" y="18" width="23" height="4" rx="2" fill="#5b4fff"/>
+                    <rect x="12" y="28" width="26" height="3" rx="1" fill="#5b4fff" opacity="0.5"/>
+                    <rect x="12" y="36" width="46" height="18" rx="3" fill="#0e0e1c" stroke="#222240"/>
+                    <rect x="15" y="40" width="35" height="3" rx="1" fill="#222240"/>
+                    <rect x="15" y="45" width="25" height="3" rx="1" fill="#222240"/>
+                    <rect x="12" y="60" width="46" height="10" rx="3" fill="#0e0e1c" stroke="#222240"/>
+                    <circle cx="22" cy="65" r="4" fill="#6affcb" opacity="0.8"/>
+                    <circle cx="28" cy="88" r="3" fill="#6affcb"/>
+                    <circle cx="35" cy="88" r="3" fill="#5b4fff" opacity="0.5"/>
+                    <circle cx="42" cy="88" r="3" fill="#222240"/>
+                  </svg>
+                  <div style="position:absolute;top:5px;right:0;background:rgba(91,79,255,0.9);color:white;border-radius:8px;padding:3px 8px;font-size:9px;font-weight:600;animation:toastSlide 2s 1s ease infinite;">New question! →</div>
+                </div>
               </div>
               <div class="astep-content">
                 <div class="astep-num">03</div>
                 <div class="astep-title">Follow along automatically</div>
-                <div class="astep-desc">When the host moves to the next question, your screen updates automatically. A progress indicator shows where you are. You can submit as many responses as you like to any question.</div>
+                <div class="astep-desc">When the host moves to the next question, your screen updates automatically. A progress bar shows where you are. Submit as many responses as you like to any question.</div>
               </div>
             </div>
 
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- FAQ -->
-    <div class="tab-panel" id="tab-faq">
-      <div class="content-tab">
-        <div class="content-eyebrow">FAQ</div>
-        <div class="content-heading">Common questions.</div>
-        <div class="faq-list">
-          <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">
-              Is AgoraAI free to use?
-              <span class="faq-chevron">▾</span>
-            </div>
-            <div class="faq-answer">AgoraAI is currently in early access and free to use. We're building the product in public and welcome feedback from early users. Pricing will be introduced as the platform grows, with a generous free tier always available for small teams.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">
-              Do participants need to create an account?
-              <span class="faq-chevron">▾</span>
-            </div>
-            <div class="faq-answer">No. Participants join via a link or room code — no account, no app download, no friction. They just enter the code and start responding. We believe the lowest possible barrier to participation leads to the best sessions.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">
-              Are responses anonymous?
-              <span class="faq-chevron">▾</span>
-            </div>
-            <div class="faq-answer">Yes, completely. Participant names are never collected or shown to the host. We believe anonymity leads to more honest, higher-quality responses — especially in a corporate setting where people may feel inhibited.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">
-              How many participants can join a session?
-              <span class="faq-chevron">▾</span>
-            </div>
-            <div class="faq-answer">AgoraAI is built to scale. There's no hard cap — sessions work equally well for 5 people or 500. The AI clustering becomes more powerful with more responses, so larger groups actually produce richer insights.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">
-              How does the AI clustering work?
-              <span class="faq-chevron">▾</span>
-            </div>
-            <div class="faq-answer">AgoraAI uses Claude (Anthropic's AI) to semantically group responses — meaning it understands meaning, not just matching words. "We need more training" and "upskilling the team is critical" would be grouped together even though they use different words.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">
-              Can I save or export my session results?
-              <span class="faq-chevron">▾</span>
-            </div>
-            <div class="faq-answer">At the end of every session, AgoraAI generates a full AI synthesis you can copy to your clipboard. Past sessions are saved in your session history. Full export functionality (PDF, CSV) is on our roadmap.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">
-              What kinds of sessions work best with AgoraAI?
-              <span class="faq-chevron">▾</span>
-            </div>
-            <div class="faq-answer">AgoraAI shines in any setting where you want to quickly understand what a group thinks: strategy workshops, client discovery sessions, team retrospectives, town halls, training sessions, conference panels, and stakeholder consultations. If you need to synthesise group thinking fast, AgoraAI is built for you.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">
-              Is my data secure?
-              <span class="faq-chevron">▾</span>
-            </div>
-            <div class="faq-answer">Session data is stored securely via Supabase (PostgreSQL) with industry-standard encryption. We do not sell data to third parties. AI analysis is performed via Anthropic's API, which is subject to Anthropic's privacy and data policies.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CREATE ROOM -->
-  <div id="create-room" class="screen">
-    <div class="create-layout">
-      <!-- LEFT: Session details + question cards -->
-      <div class="create-main">
-        <div class="create-header">
-          <button class="btn btn-ghost btn-sm" onclick="showScreen('home')">← Back</button>
-          <div class="create-title">Host a Session</div>
-          <button class="btn btn-primary" onclick="createRoom()">Launch →</button>
-        </div>
-        <div class="field" style="max-width:600px;">
-          <label>Session title</label>
-          <input id="session-title" type="text" placeholder="e.g. Team Strategy Workshop"/>
-        </div>
-        <div class="create-deck-label">Your questions</div>
-        <div class="slide-builder" id="slide-builder">
-          <div class="slide-item" data-type="cluster">
-            <div class="slide-item-header">
-              <div class="slide-item-left">
-                <div class="slide-type-icon">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="12" r="3" fill="#7c6aff"/>
-                    <circle cx="5" cy="7" r="2" fill="#7c6aff" opacity="0.6"/>
-                    <circle cx="19" cy="7" r="2" fill="#7c6aff" opacity="0.6"/>
-                    <circle cx="5" cy="17" r="2" fill="#7c6aff" opacity="0.6"/>
-                    <circle cx="19" cy="17" r="2" fill="#7c6aff" opacity="0.6"/>
-                    <line x1="12" y1="12" x2="5" y2="7" stroke="#7c6aff" stroke-width="1" opacity="0.4"/>
-                    <line x1="12" y1="12" x2="19" y2="7" stroke="#7c6aff" stroke-width="1" opacity="0.4"/>
-                    <line x1="12" y1="12" x2="5" y2="17" stroke="#7c6aff" stroke-width="1" opacity="0.4"/>
-                    <line x1="12" y1="12" x2="19" y2="17" stroke="#7c6aff" stroke-width="1" opacity="0.4"/>
-                  </svg>
-                </div>
-                <span class="slide-num-badge">Q1 · Idea Clusters</span>
-              </div>
-              <button class="slide-delete-btn" onclick="removeSlide(this)" title="Remove">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="14" height="14">
-                  <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-              </button>
-            </div>
-            <input type="text" placeholder="Ask your audience something..." class="slide-question-input"/>
-          </div>
-        </div>
-        <div id="create-error" class="error-msg">Please add at least one question.</div>
-      </div>
-
-      <!-- RIGHT: Question type toolbar -->
-      <div class="create-toolbar">
-        <div class="toolbar-label">Add question type</div>
-        <div class="toolbar-types">
-          <button class="type-btn" onclick="addSlide('cluster')">
-            <div class="type-btn-icon">
-              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="16" cy="16" r="4" fill="#7c6aff"/>
-                <circle cx="6" cy="9" r="3" fill="#7c6aff" opacity="0.5"/>
-                <circle cx="26" cy="9" r="3" fill="#7c6aff" opacity="0.5"/>
-                <circle cx="6" cy="23" r="3" fill="#7c6aff" opacity="0.5"/>
-                <circle cx="26" cy="23" r="3" fill="#7c6aff" opacity="0.5"/>
-                <line x1="16" y1="16" x2="6" y2="9" stroke="#7c6aff" stroke-width="1.5" opacity="0.35"/>
-                <line x1="16" y1="16" x2="26" y2="9" stroke="#7c6aff" stroke-width="1.5" opacity="0.35"/>
-                <line x1="16" y1="16" x2="6" y2="23" stroke="#7c6aff" stroke-width="1.5" opacity="0.35"/>
-                <line x1="16" y1="16" x2="26" y2="23" stroke="#7c6aff" stroke-width="1.5" opacity="0.35"/>
-              </svg>
-            </div>
-            <div class="type-btn-label">Idea Clusters</div>
-            <div class="type-btn-desc">Group similar responses by theme</div>
-          </button>
-
-          <button class="type-btn" onclick="addSlide('ranking')">
-            <div class="type-btn-icon">
-              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="22" width="6" height="7" rx="1.5" fill="#7c6aff" opacity="0.5"/>
-                <rect x="13" y="15" width="6" height="14" rx="1.5" fill="#7c6aff" opacity="0.75"/>
-                <rect x="22" y="8" width="6" height="21" rx="1.5" fill="#7c6aff"/>
-              </svg>
-            </div>
-            <div class="type-btn-label">Theme Ranking</div>
-            <div class="type-btn-desc">Rank themes by frequency of mention</div>
-          </button>
-
-          <button class="type-btn" onclick="addSlide('sentiment')">
-            <div class="type-btn-icon">
-              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="16" cy="16" r="11" stroke="#7c6aff" stroke-width="1.5" opacity="0.4"/>
-                <path d="M10 19c1.5 2.5 10.5 2.5 12 0" stroke="#6affcb" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="11" cy="13" r="1.5" fill="#eeeef8"/>
-                <circle cx="21" cy="13" r="1.5" fill="#eeeef8"/>
-              </svg>
-            </div>
-            <div class="type-btn-label">Sentiment</div>
-            <div class="type-btn-desc">Read positive, neutral and concerned split</div>
-          </button>
-        </div>
-
-        <div class="toolbar-tip">
-          <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><circle cx="8" cy="8" r="7" stroke="#5a5a7a" stroke-width="1.2"/></svg>
-          Click a type to add a question to your session
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- JOIN ROOM -->
-  <div id="join-room" class="screen">
-    <div class="form-wrap">
-      <div class="form-card">
-        <div class="form-title">Join a Session</div>
-        <div class="field">
-          <label>Session code</label>
-          <input id="join-code" type="text" placeholder="Enter code..." maxlength="6" style="text-transform:uppercase;letter-spacing:0.2em;font-family:'Bebas Neue',sans-serif;font-size:2rem;text-align:center;"/>
-        </div>
-        <div id="join-error" class="error-msg">Session not found. Check the code and try again.</div>
-        <button class="btn btn-primary btn-full" onclick="joinRoom()">Join →</button>
-        <button class="btn btn-ghost btn-full" onclick="showScreen('home')">← Back</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- HOST VIEW -->
-  <div id="host-view" class="screen">
-    <div class="slide-display">
-      <div class="progress-bar-wrap">
-        <div class="progress-bar"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
-        <span class="progress-label" id="progress-label">1 / 1</span>
-      </div>
-      <div class="slide-header">
-        <div class="slide-meta">
-          <div class="slide-eyebrow" id="slide-eyebrow">Question 1 of 1</div>
-          <div class="slide-question-text" id="slide-question-display">—</div>
-        </div>
-        <div class="slide-controls">
-          <button class="btn btn-ghost btn-sm" onclick="prevSlide()">← Prev</button>
-          <button class="btn btn-secondary btn-sm" onclick="nextSlide()">Next →</button>
-          <button class="btn btn-glow-pink btn-sm" onclick="endSession()">End Session</button>
-        </div>
-      </div>
-
-      <!-- INSIGHTS DASHBOARD -->
-      <div class="insights-dashboard" id="insights-dashboard" style="display:none;">
-        <!-- AI Synthesis -->
-        <div class="insight-panel wide highlight" id="panel-synthesis">
-          <div class="insight-panel-header">
-            <div style="display:flex;align-items:center;gap:0.6rem;">
-              <div class="insight-panel-title">✦ AI Synthesis</div>
-              <div class="insight-panel-badge">Auto-updating</div>
-            </div>
-            <button class="btn btn-glow-green btn-sm" onclick="triggerResearch()" id="research-btn" style="font-size:0.78rem;padding:0.4rem 0.9rem;">🔍 Back it up</button>
-          </div>
-          <div id="ai-thinking" class="ai-thinking">
-            <div class="spinner" style="width:16px;height:16px;"></div>
-            <span>Analysing responses<span class="thinking-dots"><span>.</span><span>.</span><span>.</span></span></span>
-          </div>
-          <div class="ai-synthesis-text" id="ai-synthesis-text"></div>
-          <div class="research-result" id="research-result" style="display:none;">
-            <div class="research-divider">
-              <span>🔍 Research Context</span>
-            </div>
-            <div class="research-text" id="research-text"></div>
-          </div>
-        </div>
-
-        <!-- Clusters / Chart -->
-        <div class="insight-panel wide" id="panel-clusters">
-          <div class="insight-panel-header">
-            <div class="insight-panel-title" id="clusters-panel-title">Key Themes</div>
-            <div class="stat-pill" style="font-size:0.75rem;"><strong id="cluster-count">0</strong> clusters</div>
-          </div>
-          <div id="clusters-grid" class="clusters-grid">
-            <div class="waiting-state"><div class="spinner"></div><p style="font-size:0.85rem;">Waiting for responses...</p></div>
-          </div>
-        </div>
-
-        <!-- Dynamic Panel A -->
-        <div class="insight-panel" id="panel-dynamic-a">
-          <div class="insight-panel-header">
-            <div class="insight-panel-title" id="dynamic-a-title">Sentiment</div>
-          </div>
-          <div id="dynamic-a-content">
-            <div class="waiting-state" style="padding:1rem;"><p style="font-size:0.82rem;">Building picture...</p></div>
-          </div>
-        </div>
-
-        <!-- Dynamic Panel B / Standout -->
-        <div class="insight-panel" id="panel-dynamic-b">
-          <div class="insight-panel-header">
-            <div class="insight-panel-title" id="dynamic-b-title">Standout Response</div>
-            <div class="insight-panel-badge" id="dynamic-b-badge">AI picked</div>
-          </div>
-          <div id="dynamic-b-content">
-            <div class="waiting-state" style="padding:1rem;"><p style="font-size:0.82rem;">Analysing...</p></div>
-          </div>
-        </div>
-      </div>
-
-      <div id="waiting-dashboard" class="waiting-state" style="margin-top:1rem;">
-        <div class="spinner"></div>
-        <p>Waiting for responses — insights will appear automatically</p>
-      </div>
-    </div>
-
-    <div class="host-bottom-bar">
-      <div class="room-code-display">
-        <div class="live-indicator"><div class="live-dot"></div>Live</div>
-        <div class="big-code" id="bottom-code">—</div>
-        <button class="btn-copy" onclick="copyLink()">Copy link</button>
-        <button class="qr-btn" onclick="showQR()">QR Code</button>
-      </div>
-      <div class="bottom-bar-right">
-        <div class="stat-pill"><strong id="response-count">0</strong> responses</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- PARTICIPANT VIEW -->
-  <div id="participant-view" class="screen">
-    <div class="participant-slide-card">
-      <div class="p-progress" id="p-progress"></div>
-      <div class="p-slide-indicator" id="p-slide-indicator">Question 1</div>
-      <div class="p-question" id="p-question">Loading...</div>
-      <div class="p-question-type" id="p-question-type"></div>
-    </div>
-    <div class="form-card" style="max-width:500px;">
-      <div class="field">
-        <label>Your response</label>
-        <input id="response-input" type="text" placeholder="Share your idea..." maxlength="200"/>
-      </div>
-      <button class="btn btn-primary btn-full" onclick="submitResponse()">Submit →</button>
-    </div>
-    <div class="submitted-list" id="submitted-list"></div>
-  </div>
-
-  <!-- HISTORY -->
-  <div id="history" class="screen">
-    <div class="history-section">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
-        <div class="history-title">Past Sessions</div>
-        <button class="btn btn-ghost btn-sm" onclick="showScreen('home')">← Back</button>
-      </div>
-      <div id="history-list"></div>
-    </div>
-  </div>
-</div>
-
-<!-- QR MODAL -->
-<div class="qr-modal" id="qr-modal" onclick="closeQR()">
-  <div class="qr-card" onclick="event.stopPropagation()">
-    <p style="color:#888;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;">Scan to join</p>
-    <div id="qr-canvas" style="line-height:0;"></div>
-    <div class="qr-code-text" id="qr-code-display">—</div>
-    <button class="qr-close" onclick="closeQR()">Close</button>
-  </div>
-</div>
-
-<!-- FINAL SUMMARY -->
-<div class="final-summary-overlay" id="final-summary-overlay">
-  <div class="final-summary-card">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
-      <div class="final-summary-title">Session Summary</div>
-    </div>
-    <div class="final-summary-text" id="final-summary-text">Generating your session summary...</div>
-    <div class="summary-actions">
-      <button class="btn btn-secondary btn-sm" onclick="copySummary()">Copy Summary</button>
-      <button class="btn btn-ghost btn-sm" onclick="closeSummaryAndGoHome()">Back to Home</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-  const SUPABASE_URL = "https://nxqikfmnyqdaefwjywuv.supabase.co"
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54cWlrZm1ueXFkYWVmd2p5d3V2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyOTkxMjQsImV4cCI6MjA5NTg3NTEyNH0.j7xSDDGedMtDqtgglyAQabV34Nj5LWkZwfHTLBaUVSw"
-  const { createClient } = supabase
-  const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-
-  let currentRoom = null, slides = [], currentSlideIndex = 0
-  let allResponses = [], allSessionResponses = {}
-  let clusterTimeout = null, slideCount = 1
-
-  setTimeout(() => { const i = document.getElementById('intro'); if(i) i.remove() }, 4000)
-
-  // ---- NAV ----
-  function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
-    const el = document.getElementById(id)
-    if (el) el.classList.add('active')
-    if (id === 'history') loadHistory()
-  }
-
-  function goHome() {
-    currentRoom = null; slides = []; currentSlideIndex = 0
-    allResponses = []; allSessionResponses = {}
-    showScreen('home')
-  }
-
-  function toggleTheme() {
-    const body = document.body
-    const isDark = !body.classList.contains('light-mode')
-    body.classList.toggle('light-mode')
-    document.getElementById('theme-icon-dark').style.display = isDark ? 'none' : 'block'
-    document.getElementById('theme-icon-light').style.display = isDark ? 'block' : 'none'
-    localStorage.setItem('agora_theme', isDark ? 'light' : 'dark')
-  }
-
-  // Restore theme on load
-  window.addEventListener('load', () => {
-    if (localStorage.getItem('agora_theme') === 'light') {
-      document.body.classList.add('light-mode')
-      document.getElementById('theme-icon-dark').style.display = 'none'
-      document.getElementById('theme-icon-light').style.display = 'block'
-    }
-  })
-
-  function showToast(msg) {
-    const t = document.getElementById('toast')
-    t.textContent = msg; t.classList.add('show')
-    setTimeout(() => t.classList.remove('show'), 2800)
-  }
-
-  // ---- HOME TABS ----
-  function switchHomeTab(id, btn) {
-    document.querySelectorAll('.home-tab').forEach(t => t.classList.remove('active'))
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'))
-    btn.classList.add('active')
-    document.getElementById('tab-' + id).classList.add('active')
-  }
-
-  function switchRoleTab(id, btn) {
-    document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'))
-    document.querySelectorAll('.role-panel').forEach(p => p.classList.remove('active'))
-    btn.classList.add('active')
-    document.getElementById('role-' + id).classList.add('active')
-  }
-
-  function toggleFaq(el) {
-    const item = el.closest('.faq-item')
-    item.classList.toggle('open')
-  }
-
-  // ---- SLIDE BUILDER ----
-  const TYPE_CONFIG = {
-    cluster: {
-      label: 'Idea Clusters',
-      icon: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" fill="#7c6aff"/><circle cx="5" cy="7" r="2" fill="#7c6aff" opacity="0.6"/><circle cx="19" cy="7" r="2" fill="#7c6aff" opacity="0.6"/><circle cx="5" cy="17" r="2" fill="#7c6aff" opacity="0.6"/><circle cx="19" cy="17" r="2" fill="#7c6aff" opacity="0.6"/><line x1="12" y1="12" x2="5" y2="7" stroke="#7c6aff" stroke-width="1" opacity="0.4"/><line x1="12" y1="12" x2="19" y2="7" stroke="#7c6aff" stroke-width="1" opacity="0.4"/><line x1="12" y1="12" x2="5" y2="17" stroke="#7c6aff" stroke-width="1" opacity="0.4"/><line x1="12" y1="12" x2="19" y2="17" stroke="#7c6aff" stroke-width="1" opacity="0.4"/></svg>`
-    },
-    ranking: {
-      label: 'Theme Ranking',
-      icon: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="17" width="5" height="5" rx="1" fill="#7c6aff" opacity="0.5"/><rect x="10" y="11" width="5" height="11" rx="1" fill="#7c6aff" opacity="0.75"/><rect x="17" y="5" width="5" height="17" rx="1" fill="#7c6aff"/></svg>`
-    },
-    sentiment: {
-      label: 'Sentiment',
-      icon: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="#7c6aff" stroke-width="1.5" opacity="0.4"/><path d="M8 15c1 2 7 2 8 0" stroke="#6affcb" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="10" r="1.2" fill="#eeeef8"/><circle cx="15" cy="10" r="1.2" fill="#eeeef8"/></svg>`
-    }
-  }
-
-  function addSlide(type) {
-    type = type || 'cluster'
-    slideCount++
-    const cfg = TYPE_CONFIG[type]
-    const builder = document.getElementById('slide-builder')
-    const div = document.createElement('div')
-    div.className = 'slide-item'
-    div.dataset.type = type
-    div.innerHTML = `
-      <div class="slide-item-header">
-        <div class="slide-item-left">
-          <div class="slide-type-icon">${cfg.icon}</div>
-          <span class="slide-num-badge">Q${slideCount} · ${cfg.label}</span>
-        </div>
-        <button class="slide-delete-btn" onclick="removeSlide(this)" title="Remove">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="14" height="14"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </button>
-      </div>
-      <input type="text" placeholder="Ask your audience something..." class="slide-question-input"/>`
-    builder.appendChild(div)
-    div.querySelector('.slide-question-input').focus()
-    showToast(`${cfg.label} question added`)
-  }
-
-  function removeSlide(btn) {
-    const items = document.querySelectorAll('.slide-item')
-    if (items.length <= 1) { showToast('Need at least one question!'); return }
-    btn.closest('.slide-item').remove()
-    document.querySelectorAll('.slide-item').forEach((item, i) => {
-      item.querySelector('.slide-num-badge').textContent = `Q${i + 1} · ${TYPE_CONFIG[item.dataset.type]?.label || 'Question'}`
-    })
-    slideCount = document.querySelectorAll('.slide-item').length
-  }
-
-  // ---- CREATE ROOM ----
-  async function createRoom() {
-    const errEl = document.getElementById('create-error')
-    const questions = Array.from(document.querySelectorAll('.slide-item')).map(item => ({
-      question: item.querySelector('.slide-question-input').value.trim(),
-      type: item.dataset.type || 'cluster'
-    })).filter(s => s.question)
-    if (questions.length === 0) { errEl.style.display = 'block'; return }
-    errEl.style.display = 'none'
-    const code = Math.random().toString(36).substring(2, 8).toUpperCase()
-    const title = document.getElementById('session-title').value.trim() || 'Session'
-    const { data, error } = await db.from('rooms').insert({ code, question: JSON.stringify({ title, slides: questions, currentSlide: 0 }) }).select().single()
-    if (error) { alert('Error: ' + error.message); return }
-    currentRoom = data; slides = questions; currentSlideIndex = 0; allSessionResponses = {}
-    saveToHistory({ id: data.id, title, code, date: new Date().toISOString(), slideCount: questions.length })
-    document.getElementById('bottom-code').textContent = code
-    updateHostSlideDisplay()
-    showScreen('host-view')
-    startListening(data.id)
-  }
-
-  // ---- HOST DISPLAY ----
-  function updateHostSlideDisplay() {
-    const slide = slides[currentSlideIndex]
-    const typeLabel = slide.type === 'cluster' ? 'Idea Clusters' : slide.type === 'ranking' ? 'Theme Ranking' : 'Sentiment'
-    document.getElementById('slide-eyebrow').textContent = `Question ${currentSlideIndex + 1} of ${slides.length} — ${typeLabel}`
-    document.getElementById('slide-question-display').textContent = slide.question
-    const pct = slides.length > 1 ? (currentSlideIndex / (slides.length - 1)) * 100 : 100
-    document.getElementById('progress-fill').style.width = pct + '%'
-    document.getElementById('progress-label').textContent = `${currentSlideIndex + 1} / ${slides.length}`
-    allResponses = []
-    document.getElementById('response-count').textContent = 0
-    document.getElementById('cluster-count').textContent = 0
-    document.getElementById('insights-dashboard').style.display = 'none'
-    document.getElementById('waiting-dashboard').style.display = 'flex'
-    document.getElementById('clusters-grid').innerHTML = `<div class="waiting-state"><div class="spinner"></div><p style="font-size:0.85rem;">Waiting for responses...</p></div>`
-    document.getElementById('ai-synthesis-text').textContent = ''
-    document.getElementById('ai-synthesis-text').classList.remove('visible')
-    document.getElementById('ai-thinking').style.display = 'flex'
-    document.getElementById('dynamic-a-content').innerHTML = `<div class="waiting-state" style="padding:1rem;"><p style="font-size:0.82rem;">Building picture...</p></div>`
-    document.getElementById('dynamic-b-content').innerHTML = `<div class="waiting-state" style="padding:1rem;"><p style="font-size:0.82rem;">Analysing...</p></div>`
-    document.getElementById('research-result').style.display = 'none'
-    const resBtn = document.getElementById('research-btn')
-    if (resBtn) { resBtn.textContent = '🔍 Back it up'; resBtn.disabled = false; }
-    clearTimeout(clusterTimeout)
-  }
-
-  async function updateCurrentSlide() {
-    updateHostSlideDisplay()
-    if (currentRoom) {
-      const title = document.getElementById('session-title')?.value || 'Session'
-      await db.from('rooms').update({ question: JSON.stringify({ title, slides, currentSlide: currentSlideIndex }) }).eq('id', currentRoom.id)
-    }
-  }
-
-  function nextSlide() { if (currentSlideIndex < slides.length - 1) { currentSlideIndex++; updateCurrentSlide() } else showToast('Last question!') }
-  function prevSlide() { if (currentSlideIndex > 0) { currentSlideIndex--; updateCurrentSlide() } else showToast('First question!') }
-
-  function copyLink() {
-    const url = `${window.location.origin}${window.location.pathname}?join=${currentRoom.code}`
-    navigator.clipboard.writeText(url)
-    showToast('Link copied!')
-  }
-
-  // ---- QR ----
-  function showQR() {
-    const url = `${window.location.origin}${window.location.pathname}?join=${currentRoom.code}`
-    const qr = qrcode(0, 'M')
-    qr.addData(url)
-    qr.make()
-    document.getElementById('qr-canvas').innerHTML = qr.createImgTag(5, 8)
-    document.getElementById('qr-code-display').textContent = currentRoom.code
-    document.getElementById('qr-modal').classList.add('visible')
-  }
-  function closeQR() { document.getElementById('qr-modal').classList.remove('visible') }
-
-  // ---- REALTIME ----
-  function startListening(roomId) {
-    db.channel('responses-' + roomId)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'responses', filter: `room_id=eq.${roomId}` }, payload => {
-        if (payload.new.slide_index === currentSlideIndex) {
-          allResponses.push(payload.new)
-          if (!allSessionResponses[payload.new.slide_index]) allSessionResponses[payload.new.slide_index] = []
-          allSessionResponses[payload.new.slide_index].push(payload.new)
-          const el = document.getElementById('response-count')
-          el.textContent = allResponses.length
-          el.classList.remove('count-bump'); void el.offsetWidth; el.classList.add('count-bump')
-          if (allResponses.length >= 3) {
-            document.getElementById('insights-dashboard').style.display = 'grid'
-            document.getElementById('waiting-dashboard').style.display = 'none'
-          }
-          scheduleClustering()
-        }
-      }).subscribe()
-  }
-
-  // ---- CLUSTERING ----
-  function scheduleClustering() { clearTimeout(clusterTimeout); clusterTimeout = setTimeout(runClustering, 2500) }
-
-  async function runClustering() {
-    if (allResponses.length === 0) return
-    const slide = slides[currentSlideIndex]
-    const responseTexts = allResponses.map(r => r.content).join('\n')
-    const isRanking = slide.type === 'ranking'
-
-    const prompt = `You are analysing live brainstorm responses.
-Host question: "${slide.question}"
-Responses:
-${responseTexts}
-
-First, decide which TWO secondary panels are most relevant for this question:
-- "sentiment" (positive/neutral/concerned split) — use when question involves feelings, opinions, or attitudes
-- "consensus" (how aligned is the group, 0-100%) — use when question has right/wrong answers or clear themes
-- "diversity" (how varied are the responses) — use when question is open-ended or creative
-- "geography" (if responses mention places) — use when question involves locations
-- "standout" (a single interesting outlier) — almost always useful
-
-Return JSON only:
-{
-  "clusters": [{"label":"name","items":["r1","r2"],"count":2,"insight":"optional for top clusters with 3+"}],
-  "summary": "2-3 sentence synthesis of what the group is really saying.",
-  "panel_a": {
-    "type": "sentiment|consensus|diversity|geography",
-    "title": "Panel title",
-    "sentiment": {"positive":40,"neutral":35,"concerned":25},
-    "consensus_score": 72,
-    "diversity_note": "Brief note about response variety",
-    "geography_note": "Brief note about geographic spread"
-  },
-  "panel_b": {
-    "type": "standout",
-    "title": "Standout Response",
-    "quote": "The single most interesting or unexpected response verbatim.",
-    "why": "One sentence explaining why this response stands out."
-  }
-}`
-
-    try {
-      const res = await fetch("/api/cluster", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 1400, messages: [{ role: "user", content: prompt }] }) })
-      const data = await res.json()
-      const text = data.content?.[0]?.text || ""
-      const parsed = JSON.parse(text.replace(/```json|```/g, "").trim())
-      if (isRanking) renderBarChart(parsed)
-      else renderClusters(parsed)
-      updateSynthesis(parsed)
-      updateDynamicPanels(parsed)
-    } catch(e) { console.error("Cluster error:", e) }
-  }
-
-  function renderClusters(data) {
-    const grid = document.getElementById('clusters-grid')
-    grid.innerHTML = ""
-    document.getElementById('clusters-panel-title').textContent = 'Key Themes'
-    const sorted = [...data.clusters].sort((a,b) => b.count - a.count)
-    sorted.forEach((cluster, i) => {
-      const isTop = i < 3 && cluster.count >= 2
-      const card = document.createElement('div')
-      card.className = `cluster-card ${isTop ? 'top' : ''}`
-      card.innerHTML = `
-        <div class="cluster-title">
-          <div class="cluster-name">${isTop ? '✦ ' : ''}${cluster.label}</div>
-          <span class="cluster-count-badge">${cluster.count || cluster.items.length}</span>
-        </div>
-        <div class="cluster-tags">${cluster.items.map(i => `<span class="response-tag">${i}</span>`).join('')}</div>
-        ${cluster.insight ? `<div class="cluster-insight-text">${cluster.insight}</div>` : ''}`
-      grid.appendChild(card)
-    })
-    document.getElementById('cluster-count').textContent = data.clusters.length
-  }
-
-  function renderBarChart(data) {
-    const grid = document.getElementById('clusters-grid')
-    grid.innerHTML = ""
-    document.getElementById('clusters-panel-title').textContent = 'Theme Ranking'
-    const sorted = [...data.clusters].sort((a,b) => b.count - a.count)
-    const max = sorted[0]?.count || 1
-    const wrap = document.createElement('div')
-    wrap.className = 'chart-wrap'; wrap.style.width = '100%'
-    sorted.forEach((cluster, i) => {
-      const pct = Math.round((cluster.count / max) * 100)
-      const row = document.createElement('div')
-      row.className = 'chart-bar-row'
-      row.style.animationDelay = `${i * 0.08}s`
-      row.innerHTML = `
-        <div class="chart-bar-label">${i < 3 ? '✦ ' : ''}${cluster.label}</div>
-        <div class="chart-bar-track"><div class="chart-bar-fill" style="width:0%"><span class="chart-bar-count">${cluster.count}</span></div></div>`
-      wrap.appendChild(row)
-      setTimeout(() => { row.querySelector('.chart-bar-fill').style.width = pct + '%' }, 100 + i * 80)
-    })
-    grid.appendChild(wrap)
-    document.getElementById('cluster-count').textContent = data.clusters.length
-  }
-
-  function updateSynthesis(data) {
-    const el = document.getElementById('ai-synthesis-text')
-    const thinking = document.getElementById('ai-thinking')
-    if (data.summary) {
-      el.textContent = data.summary
-      thinking.style.display = 'none'
-      setTimeout(() => el.classList.add('visible'), 50)
-    }
-  }
-
-  function updateDynamicPanels(data) {
-    // Panel A
-    const panelA = data.panel_a
-    if (panelA) {
-      document.getElementById('dynamic-a-title').textContent = panelA.title || 'Analysis'
-      const contentEl = document.getElementById('dynamic-a-content')
-
-      if (panelA.type === 'sentiment' && panelA.sentiment) {
-        const s = panelA.sentiment
-        const items = [
-          { label: 'Positive', value: s.positive || 0, color: 'var(--accent3)' },
-          { label: 'Neutral', value: s.neutral || 0, color: 'var(--accent)' },
-          { label: 'Concerned', value: s.concerned || 0, color: 'var(--accent2)' }
-        ]
-        contentEl.innerHTML = '<div class="sentiment-bars">' + items.map(item => `
-          <div class="sentiment-row">
-            <div class="sentiment-label">${item.label}</div>
-            <div class="sentiment-track"><div class="sentiment-fill" style="width:0%;background:${item.color}" data-val="${item.value}"></div></div>
-            <div class="sentiment-count">${item.value}%</div>
-          </div>`).join('') + '</div>'
-        setTimeout(() => contentEl.querySelectorAll('.sentiment-fill').forEach(el => el.style.width = el.dataset.val + '%'), 100)
-
-      } else if (panelA.type === 'consensus' && panelA.consensus_score !== undefined) {
-        const score = panelA.consensus_score
-        const color = score > 70 ? 'var(--accent3)' : score > 40 ? 'var(--accent)' : 'var(--accent2)'
-        contentEl.innerHTML = `
-          <div style="display:flex;flex-direction:column;gap:0.75rem;align-items:center;padding:0.5rem 0;">
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:${color};line-height:1;">${score}%</div>
-            <div style="font-size:0.82rem;color:var(--muted);text-align:center;">group alignment</div>
-            <div style="width:100%;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;">
-              <div style="height:100%;width:0%;background:${color};border-radius:3px;transition:width 1s ease;" data-val="${score}"></div>
-            </div>
-          </div>`
-        setTimeout(() => { const bar = contentEl.querySelector('[data-val]'); if(bar) bar.style.width = score + '%' }, 100)
-
-      } else if (panelA.type === 'diversity') {
-        contentEl.innerHTML = `<div style="font-size:0.88rem;color:var(--muted);line-height:1.6;padding:0.25rem 0;">${panelA.diversity_note || 'Analysing response variety...'}</div>`
-
-      } else if (panelA.type === 'geography') {
-        contentEl.innerHTML = `<div style="font-size:0.88rem;color:var(--muted);line-height:1.6;padding:0.25rem 0;">${panelA.geography_note || 'Mapping response geography...'}</div>`
-      }
-    }
-
-    // Panel B - standout
-    const panelB = data.panel_b
-    if (panelB) {
-      document.getElementById('dynamic-b-title').textContent = panelB.title || 'Standout Response'
-      const badge = document.getElementById('dynamic-b-badge')
-      if (badge) badge.style.display = 'block'
-      const contentEl = document.getElementById('dynamic-b-content')
-      if (panelB.quote) {
-        contentEl.innerHTML = `
-          <blockquote class="standout-quote visible" style="opacity:0;transition:opacity 0.8s ease;">"${panelB.quote}"</blockquote>
-          ${panelB.why ? `<div style="margin-top:0.75rem;font-size:0.82rem;color:var(--muted);line-height:1.5;font-style:normal;">${panelB.why}</div>` : ''}
-        `
-        setTimeout(() => { const q = contentEl.querySelector('.standout-quote'); if(q) q.style.opacity = '1' }, 100)
-      }
-    }
-  }
-
-  // ---- RESEARCH ----
-  async function triggerResearch() {
-    if (allResponses.length === 0) { showToast('No responses yet!'); return }
-    const btn = document.getElementById('research-btn')
-    const resultEl = document.getElementById('research-result')
-    const textEl = document.getElementById('research-text')
-    btn.textContent = 'Searching...'
-    btn.disabled = true
-    resultEl.style.display = 'block'
-    textEl.textContent = 'Searching for relevant research and context...'
-
-    const slide = slides[currentSlideIndex]
-    const themes = [...new Set(allResponses.map(r => r.content))].slice(0, 15).join(', ')
-
-    const prompt = `You are a research assistant at a live workshop.
-Host question: "${slide.question}"
-Audience responses included: ${themes}
-
-Search your knowledge to find:
-1. A relevant real-world statistic, index, ranking, or research finding that relates to what the audience said
-2. Compare it briefly to the group's responses — do they align with the data, or is there an interesting difference?
-3. End with one sentence acknowledging that personal preferences and context always matter
-
-Keep it to 3 sentences max. Be specific — cite a real source or index if you know one. Be honest if you're uncertain.`
-
-    try {
-      const res = await fetch("/api/cluster", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 300, messages: [{ role: "user", content: prompt }] }) })
-      const data = await res.json()
-      const text = data.content?.[0]?.text || "Could not find relevant research."
-      textEl.innerHTML = text
-      btn.textContent = '✓ Research added'
-    } catch(e) {
-      textEl.textContent = "Error fetching research."
-      btn.textContent = '🔍 Back it up'
-      btn.disabled = false
-    }
-  }
-
-  // ---- END SESSION ----
-  async function endSession() {
-    const overlay = document.getElementById('final-summary-overlay')
-    const textEl = document.getElementById('final-summary-text')
-    overlay.classList.add('visible')
-    textEl.textContent = 'Generating your session summary...'
-    const hasResponses = Object.keys(allSessionResponses).length > 0
-    if (!hasResponses) { textEl.textContent = 'No responses were collected in this session.'; return }
-    let allContext = slides.map((s, i) => {
-      const responses = (allSessionResponses[i] || []).map(r => r.content).join(', ')
-      return `Question ${i+1}: "${s.question}"\nResponses: ${responses || 'No responses'}`
-    }).join('\n\n')
-    const prompt = `You facilitated a live workshop. Here's what happened:\n${allContext}\n\nWrite a concise session synthesis (5-6 sentences) that:\n1. Identifies strongest themes across the whole session\n2. Notes any tensions or interesting contrasts\n3. Highlights the most actionable insight\n4. Ends with one recommended next step\n\nWrite in a warm, professional facilitation voice.`
-    try {
-      const res = await fetch("/api/cluster", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 500, messages: [{ role: "user", content: prompt }] }) })
-      const data = await res.json()
-      textEl.textContent = data.content?.[0]?.text || "Could not generate summary."
-    } catch(e) { textEl.textContent = "Error generating summary." }
-  }
-
-  function closeSummaryAndGoHome() { document.getElementById('final-summary-overlay').classList.remove('visible'); goHome() }
-  function copySummary() { navigator.clipboard.writeText(document.getElementById('final-summary-text').textContent); showToast('Summary copied!') }
-
-  // ---- HISTORY ----
-  function saveToHistory(session) {
-    const history = JSON.parse(localStorage.getItem('agora_history') || '[]')
-    history.unshift(session)
-    localStorage.setItem('agora_history', JSON.stringify(history.slice(0, 20)))
-  }
-
-  function loadHistory() {
-    const history = JSON.parse(localStorage.getItem('agora_history') || '[]')
-    const list = document.getElementById('history-list')
-    if (history.length === 0) { list.innerHTML = '<div class="history-empty">No past sessions yet. Host your first session!</div>'; return }
-    list.innerHTML = history.map((s, i) => `
-      <div class="history-item">
-        <div>
-          <div class="history-item-title">${s.title}</div>
-          <div class="history-item-date">${new Date(s.date).toLocaleDateString('en-AU', { day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit' })} · ${s.slideCount} question${s.slideCount !== 1 ? 's' : ''} · Code: ${s.code}</div>
-        </div>
-        <button class="btn btn-glow-pink btn-sm" onclick="deleteSession(${i})">Delete</button>
-      </div>`).join('')
-  }
-
-  function deleteSession(index) {
-    const history = JSON.parse(localStorage.getItem('agora_history') || '[]')
-    history.splice(index, 1)
-    localStorage.setItem('agora_history', JSON.stringify(history))
-    loadHistory()
-    showToast('Session deleted')
-  }
-
-  // ---- PARTICIPANT ----
-  async function joinRoom() {
-    const code = document.getElementById('join-code').value.trim().toUpperCase()
-    const errEl = document.getElementById('join-error')
-    if (!code) return
-    const { data, error } = await db.from('rooms').select().eq('code', code).single()
-    if (error || !data) { errEl.style.display = 'block'; return }
-    errEl.style.display = 'none'
-    currentRoom = data
-    try {
-      const parsed = JSON.parse(data.question)
-      slides = parsed.slides || [{ question: data.question, type: 'cluster' }]
-      currentSlideIndex = parsed.currentSlide || 0
-    } catch(e) { slides = [{ question: data.question, type: 'cluster' }]; currentSlideIndex = 0 }
-    updateParticipantView()
-    showScreen('participant-view')
-    listenForSlideChanges()
-  }
-
-  function updateParticipantView() {
-    const slide = slides[currentSlideIndex]
-    document.getElementById('p-slide-indicator').textContent = `Question ${currentSlideIndex + 1} of ${slides.length}`
-    document.getElementById('p-question').textContent = slide.question
-    document.getElementById('p-question-type').textContent = slide.type === 'cluster' ? 'Share your ideas — all responses welcome' : slide.type === 'ranking' ? 'What are the key themes you see?' : 'Share how you feel about this'
-    const dotsEl = document.getElementById('p-progress')
-    dotsEl.innerHTML = slides.map((_, i) => `<div class="p-progress-dot ${i < currentSlideIndex ? 'done' : i === currentSlideIndex ? 'active' : ''}"></div>`).join('')
-  }
-
-  function listenForSlideChanges() {
-    setInterval(async () => {
-      if (!currentRoom) return
-      const { data } = await db.from('rooms').select().eq('id', currentRoom.id).single()
-      if (!data) return
-      try {
-        const parsed = JSON.parse(data.question)
-        if (parsed.currentSlide !== undefined && parsed.currentSlide !== currentSlideIndex) {
-          currentSlideIndex = parsed.currentSlide; slides = parsed.slides
-          updateParticipantView()
-          document.getElementById('submitted-list').innerHTML = ''
-          document.getElementById('response-input').value = ''
-          showToast('New question!')
-        }
-      } catch(e) {}
-    }, 3000)
-  }
-
-  async function submitResponse() {
-    const input = document.getElementById('response-input')
-    const content = input.value.trim()
-    if (!content || !currentRoom) return
-    const { error } = await db.from('responses').insert({ room_id: currentRoom.id, content, slide_index: currentSlideIndex })
-    if (error) { showToast('Error submitting.'); return }
-    const list = document.getElementById('submitted-list')
-    const item = document.createElement('div')
-    item.className = 'submitted-item'; item.textContent = content
-    list.prepend(item); input.value = ''; showToast('Submitted!')
-  }
-
-  window.addEventListener('load', () => {
-    const code = new URLSearchParams(window.location.search).get('join')
-    if (code) { document.getElementById('join-code').value = code; joinRoom() }
-  })
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      if (document.activeElement === document.getElementById('response-input')) submitResponse()
-      if (document.activeElement === document.getElementById('join-code')) joinRoom()
-    }
-  })
-
-  // ---- STEP ANIMATIONS ----
-  function initStepAnimations() {
-    const steps = document.querySelectorAll('.astep')
-    if (!steps.length) return
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => entry.target.classList.add('visible'), 100)
-        }
-      })
-    }, { threshold: 0.15 })
-    steps.forEach(step => observer.observe(step))
-  }
-
-  // Init when how tab becomes active
-  const origSwitchHomeTab = switchHomeTab
-  window.switchHomeTab = function(id, btn) {
-    origSwitchHomeTab(id, btn)
-    if (id === 'how') setTimeout(initStepAnimations, 100)
-  }
-
-  // ---- PARTICLE NETWORK ----
-  ;(function() {
-    let raf, nodes = [], W, H, ctx, canvas
-
-    function setup() {
-      canvas = document.getElementById('particle-canvas')
-      if (!canvas) return
-      ctx = canvas.getContext('2d')
-      resize()
-      makeNodes()
-      if (raf) cancelAnimationFrame(raf)
-      loop()
-    }
-
-    function resize() {
-      W = canvas.width = canvas.parentElement ? canvas.parentElement.offsetWidth : window.innerWidth
-      H = canvas.height = canvas.parentElement ? canvas.parentElement.offsetHeight : window.innerHeight
-      if (W < 10) { W = canvas.width = window.innerWidth }
-      if (H < 10) { H = canvas.height = window.innerHeight }
-    }
-
-    function makeNodes() {
-      const COLORS = ['#7c6aff','#ff6a9a','#6affcb']
-      nodes = Array.from({length:55}, () => ({
-        x: Math.random()*W, y: Math.random()*H,
-        vx: (Math.random()-.5)*.4, vy: (Math.random()-.5)*.4,
-        r: Math.random()*2+1.5,
-        c: COLORS[Math.random()*3|0],
-        p: Math.random()*Math.PI*2, ps: .015+Math.random()*.02
-      }))
-    }
-
-    function loop() {
-      ctx.clearRect(0,0,W,H)
-      // connections
-      for (let i=0;i<nodes.length;i++) {
-        for (let j=i+1;j<nodes.length;j++) {
-          const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y
-          const d=Math.sqrt(dx*dx+dy*dy)
-          if (d<160) {
-            ctx.beginPath()
-            ctx.strokeStyle=`rgba(124,106,255,${(1-d/160)*.2})`
-            ctx.lineWidth=.7
-            ctx.moveTo(nodes[i].x,nodes[i].y)
-            ctx.lineTo(nodes[j].x,nodes[j].y)
-            ctx.stroke()
-          }
-        }
-      }
-      // nodes
-      for (const n of nodes) {
-        n.p+=n.ps
-        const r=n.r*(1+Math.sin(n.p)*.25)
-        // glow
-        ctx.beginPath(); ctx.arc(n.x,n.y,r*5,0,Math.PI*2)
-        ctx.fillStyle=n.c+'18'; ctx.fill()
-        // core
-        ctx.beginPath(); ctx.arc(n.x,n.y,r,0,Math.PI*2)
-        ctx.fillStyle=n.c; ctx.globalAlpha=.8; ctx.fill(); ctx.globalAlpha=1
-        // move
-        n.x+=n.vx; n.y+=n.vy
-        if(n.x<0||n.x>W) n.vx*=-1
-        if(n.y<0||n.y>H) n.vy*=-1
-      }
-      raf=requestAnimationFrame(loop)
-    }
-
-    window.addEventListener('resize', () => { if(canvas) { resize() } })
-    // Start after intro finishes
-    setTimeout(setup, 3400)
-  })()
-
-</script>
-</body>
-</html>
