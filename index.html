@@ -44,7 +44,7 @@
     /* INTRO */
     #intro { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; gap: 1rem; animation: introFade 3.5s ease forwards; pointer-events: none; }
     @keyframes introFade { 0%, 60% { opacity: 1; } 100% { opacity: 0; } }
-    .intro-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(4rem, 15vw, 9rem); letter-spacing: 0.02em; background: linear-gradient(135deg, #fff 0%, #5b4fff 60%, #ffb020 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: logoReveal 1s cubic-bezier(0.16,1,0.3,1) forwards; opacity: 0; transform: translateY(20px); }
+    .intro-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(4rem, 15vw, 9rem); letter-spacing: 0.02em; background: linear-gradient(135deg, #5b4fff 0%, #8b7fff 40%, #ffb020 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: logoReveal 1s cubic-bezier(0.16,1,0.3,1) forwards; opacity: 0; transform: translateY(20px); }
     @keyframes logoReveal { to { opacity: 1; transform: translateY(0); } }
     .intro-tagline { font-size: 0.9rem; font-weight: 300; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); animation: taglineReveal 1s 0.4s forwards; opacity: 0; }
     @keyframes taglineReveal { to { opacity: 1; } }
@@ -75,13 +75,39 @@
     .tab-panel.active { display: flex; }
 
     /* MAIN TAB */
-    #tab-main { align-items: center; justify-content: center; gap: 2.5rem; padding: 3rem 2rem; text-align: center; position: relative; overflow: hidden; min-height: calc(100vh - 110px); }
+    #tab-main { flex-direction: column; position: relative; overflow: hidden; min-height: calc(100vh - 110px); }
     #particle-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-    .home-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 2.5rem; }
+
+    /* HERO */
+    .home-hero { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; padding: 4rem 2rem 2rem; text-align: center; flex: 1; }
+    .home-logo-mark { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(2.5rem, 8vw, 5rem); letter-spacing: 0.02em; background: linear-gradient(135deg, #5b4fff, #8b7fff, #ffb020); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
+    .home-headline { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 7vw, 5.5rem); letter-spacing: 0.03em; line-height: 1.05; color: var(--text); max-width: 700px; }
+    .home-headline span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .home-tagline-animated { font-size: 1.1rem; font-weight: 300; color: var(--muted); height: 1.8rem; position: relative; overflow: hidden; min-width: 320px; }
+    .tagline-item { position: absolute; width: 100%; text-align: center; opacity: 0; transform: translateY(12px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .tagline-item.active { opacity: 1; transform: translateY(0); }
+    .tagline-item.exit { opacity: 0; transform: translateY(-12px); }
+    .home-buttons { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+    /* HOW IT WORKS STRIP */
+    .home-how { position: relative; z-index: 1; padding: 2rem; border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 900px; margin: 0 auto; width: 100%; }
+    .home-step { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; text-align: center; padding: 1rem; }
+    .home-step-icon { width: 40px; height: 40px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .home-step-num { font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; letter-spacing: 0.15em; color: var(--accent); }
+    .home-step-title { font-weight: 600; font-size: 0.95rem; }
+    .home-step-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
+    /* USE CASE SCROLL */
+    .home-usecases { position: relative; z-index: 1; padding: 1rem 0; border-top: 1px solid var(--border); overflow: hidden; width: 100%; }
+    .usecase-track { display: flex; gap: 2rem; animation: scrollTrack 20s linear infinite; width: max-content; }
+    .usecase-track:hover { animation-play-state: paused; }
+    .usecase-item { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; white-space: nowrap; }
+    .usecase-item span { color: var(--accent); margin-right: 1.5rem; }
+    @keyframes scrollTrack { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
     .home-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 12vw, 7rem); letter-spacing: 0.03em; line-height: 1; }
     .home-title span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .home-tagline { font-size: 1rem; color: var(--muted); font-weight: 300; letter-spacing: 0.05em; margin-top: -1rem; }
-    .home-buttons { display: flex; flex-direction: column; gap: 1rem; width: 100%; max-width: 320px; }
 
     /* ABOUT TAB */
     .content-tab { padding: 3rem 2rem; max-width: 760px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 3rem; }
@@ -93,7 +119,7 @@
     .feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-top: 0.5rem; }
     .feature-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; transition: border-color 0.2s; }
     .feature-card:hover { border-color: rgba(91,79,255,0.3); }
-    .feature-icon { font-size: 1.5rem; }
+    .feature-icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
     .feature-title { font-weight: 600; font-size: 0.95rem; }
     .feature-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
 
@@ -355,7 +381,7 @@
     .history-empty { text-align: center; color: var(--muted); padding: 3rem; }
 
     /* TOAST */
-    .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.7rem 1.4rem; font-size: 0.88rem; transition: transform 0.3s ease; z-index: 999; white-space: nowrap; }
+    .toast { position: fixed; bottom: 7rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.7rem 1.4rem; font-size: 0.88rem; transition: transform 0.3s ease; z-index: 999; white-space: nowrap; }
     .toast.show { transform: translateX(-50%) translateY(0); }
 
     @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -409,12 +435,95 @@
     <!-- MAIN -->
     <div class="tab-panel active" id="tab-main">
       <canvas id="particle-canvas"></canvas>
-      <div class="home-content">
-        <div class="home-title">Ideas are<br/><span>better together.</span></div>
-        <p class="home-tagline">Your ideas, AI powered</p>
+
+      <!-- HERO -->
+      <div class="home-hero">
+        <div class="home-headline">The room has<br/>the answers.<br/><span>AgoraAI finds them.</span></div>
+        <div class="home-tagline-animated" id="tagline-animated">
+          <div class="tagline-item active">Cluster ideas in real time.</div>
+          <div class="tagline-item">Back them up with research.</div>
+          <div class="tagline-item">Turn responses into insights.</div>
+          <div class="tagline-item">Built for business. Powered by AI.</div>
+          <div class="tagline-item">Your ideas, AI powered.</div>
+        </div>
         <div class="home-buttons">
-          <button class="btn btn-primary btn-full" onclick="showScreen('create-room')">Host a Session</button>
-          <button class="btn btn-secondary btn-full" onclick="showScreen('join-room')">Join a Session</button>
+          <button class="btn btn-primary" onclick="showScreen('create-room')" style="min-width:180px;">Host a Session</button>
+          <button class="btn btn-secondary" onclick="showScreen('join-room')" style="min-width:180px;">Join a Session</button>
+        </div>
+      </div>
+
+      <!-- HOW IT WORKS -->
+      <div class="home-how">
+        <div class="home-step">
+          <div class="home-step-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="22" height="22" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="3" width="18" height="18" rx="3" stroke="var(--accent)" stroke-width="1.5"/>
+              <line x1="8" y1="8" x2="16" y2="8" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+              <line x1="8" y1="12" x2="16" y2="12" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+              <line x1="8" y1="16" x2="12" y2="16" stroke="var(--accent2)" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="home-step-num">01 — CREATE</div>
+          <div class="home-step-title">Build your session</div>
+          <div class="home-step-desc">Add questions, choose analysis types, launch in under 2 minutes.</div>
+        </div>
+        <div class="home-step">
+          <div class="home-step-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="22" height="22" xmlns="http://www.w3.org/2000/svg">
+              <rect x="7" y="2" width="10" height="16" rx="2" stroke="var(--accent)" stroke-width="1.5"/>
+              <rect x="2" y="6" width="10" height="16" rx="2" stroke="var(--accent)" stroke-width="1.5" opacity="0.5"/>
+              <circle cx="18" cy="18" r="4" fill="var(--accent2)" opacity="0.9"/>
+              <path d="M16.5 18h3M18 16.5v3" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="home-step-num">02 — SHARE</div>
+          <div class="home-step-title">Invite your audience</div>
+          <div class="home-step-desc">Share a link or QR code. Participants join on any device, no account needed.</div>
+        </div>
+        <div class="home-step">
+          <div class="home-step-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="22" height="22" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="3" fill="var(--accent)"/>
+              <circle cx="5" cy="7" r="2" fill="var(--accent)" opacity="0.5"/>
+              <circle cx="19" cy="7" r="2" fill="var(--accent)" opacity="0.5"/>
+              <circle cx="5" cy="17" r="2" fill="var(--accent2)" opacity="0.7"/>
+              <circle cx="19" cy="17" r="2" fill="var(--accent2)" opacity="0.7"/>
+              <line x1="12" y1="12" x2="5" y2="7" stroke="var(--accent)" stroke-width="1" opacity="0.3"/>
+              <line x1="12" y1="12" x2="19" y2="7" stroke="var(--accent)" stroke-width="1" opacity="0.3"/>
+              <line x1="12" y1="12" x2="5" y2="17" stroke="var(--accent2)" stroke-width="1" opacity="0.3"/>
+              <line x1="12" y1="12" x2="19" y2="17" stroke="var(--accent2)" stroke-width="1" opacity="0.3"/>
+            </svg>
+          </div>
+          <div class="home-step-num">03 — ANALYSE</div>
+          <div class="home-step-title">Watch insights emerge</div>
+          <div class="home-step-desc">AI clusters responses, reads sentiment, and synthesises insights — live.</div>
+        </div>
+      </div>
+
+      <!-- USE CASE SCROLL -->
+      <div class="home-usecases">
+        <div class="usecase-track">
+          <div class="usecase-item"><span>·</span>Strategy Workshops</div>
+          <div class="usecase-item"><span>·</span>Client Discovery</div>
+          <div class="usecase-item"><span>·</span>Town Halls</div>
+          <div class="usecase-item"><span>·</span>Team Retrospectives</div>
+          <div class="usecase-item"><span>·</span>Conference Panels</div>
+          <div class="usecase-item"><span>·</span>Stakeholder Consultation</div>
+          <div class="usecase-item"><span>·</span>Design Sprints</div>
+          <div class="usecase-item"><span>·</span>Leadership Offsites</div>
+          <div class="usecase-item"><span>·</span>Training Sessions</div>
+          <div class="usecase-item"><span>·</span>Product Discovery</div>
+          <!-- Duplicate for seamless loop -->
+          <div class="usecase-item"><span>·</span>Strategy Workshops</div>
+          <div class="usecase-item"><span>·</span>Client Discovery</div>
+          <div class="usecase-item"><span>·</span>Town Halls</div>
+          <div class="usecase-item"><span>·</span>Team Retrospectives</div>
+          <div class="usecase-item"><span>·</span>Conference Panels</div>
+          <div class="usecase-item"><span>·</span>Stakeholder Consultation</div>
+          <div class="usecase-item"><span>·</span>Design Sprints</div>
+          <div class="usecase-item"><span>·</span>Leadership Offsites</div>
+          <div class="usecase-item"><span>·</span>Training Sessions</div>
+          <div class="usecase-item"><span>·</span>Product Discovery</div>
         </div>
       </div>
     </div>
@@ -447,32 +556,32 @@
           <div class="content-heading">Not just a word cloud.<br/>A thinking partner.</div>
           <div class="feature-grid">
             <div class="feature-card">
-              <div class="feature-icon">🧠</div>
+              <div class="feature-icon"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28"><circle cx="14" cy="14" r="3.5" fill="var(--accent)"/><circle cx="5" cy="8" r="2" fill="var(--accent)" opacity="0.5"/><circle cx="23" cy="8" r="2" fill="var(--accent)" opacity="0.5"/><circle cx="5" cy="20" r="2" fill="var(--accent2)" opacity="0.6"/><circle cx="23" cy="20" r="2" fill="var(--accent2)" opacity="0.6"/><line x1="14" y1="14" x2="5" y2="8" stroke="var(--accent)" stroke-width="1" opacity="0.3"/><line x1="14" y1="14" x2="23" y2="8" stroke="var(--accent)" stroke-width="1" opacity="0.3"/><line x1="14" y1="14" x2="5" y2="20" stroke="var(--accent2)" stroke-width="1" opacity="0.3"/><line x1="14" y1="14" x2="23" y2="20" stroke="var(--accent2)" stroke-width="1" opacity="0.3"/></svg></div>
               <div class="feature-title">Real-time AI Clustering</div>
               <div class="feature-desc">Semantically groups similar responses — not just matching words, but matching meaning.</div>
             </div>
             <div class="feature-card">
-              <div class="feature-icon">✦</div>
+              <div class="feature-icon"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28"><path d="M14 3a11 11 0 0 1 0 22" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/><path d="M14 3a11 11 0 0 0 0 22" stroke="var(--accent2)" stroke-width="1.5" stroke-linecap="round"/><circle cx="14" cy="14" r="3" fill="var(--accent)"/><line x1="14" y1="11" x2="14" y2="5" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
               <div class="feature-title">Instant AI Insights</div>
               <div class="feature-desc">Surfaces what the group is really saying — validates, challenges, and adds context automatically.</div>
             </div>
             <div class="feature-card">
-              <div class="feature-icon">📊</div>
+              <div class="feature-icon"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28"><rect x="2" y="18" width="5" height="8" rx="1.5" fill="var(--accent)" opacity="0.4"/><rect x="11" y="12" width="5" height="14" rx="1.5" fill="var(--accent)" opacity="0.7"/><rect x="20" y="5" width="5" height="21" rx="1.5" fill="var(--accent2)"/><path d="M4 12l8-5 8 4 7-7" stroke="var(--accent3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <div class="feature-title">Live Insights Dashboard</div>
               <div class="feature-desc">Themes, sentiment, standout responses and AI synthesis — all updating as the room responds.</div>
             </div>
             <div class="feature-card">
-              <div class="feature-icon">🔗</div>
+              <div class="feature-icon"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28"><rect x="7" y="3" width="14" height="22" rx="2.5" stroke="var(--accent)" stroke-width="1.5" opacity="0.5"/><rect x="3" y="7" width="14" height="22" rx="2.5" stroke="var(--accent)" stroke-width="1.5" opacity="0.3"/><circle cx="22" cy="22" r="5" fill="var(--accent2)" opacity="0.9"/><path d="M20.5 22h3M22 20.5v3" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
               <div class="feature-title">Zero friction joining</div>
               <div class="feature-desc">Participants join via a link or QR code on any device. No app, no account, no friction.</div>
             </div>
             <div class="feature-card">
-              <div class="feature-icon">📝</div>
+              <div class="feature-icon"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28"><rect x="3" y="3" width="22" height="22" rx="3.5" stroke="var(--accent)" stroke-width="1.5" opacity="0.4"/><line x1="3" y1="11" x2="25" y2="11" stroke="var(--border)" stroke-width="1"/><rect x="7" y="15" width="14" height="2" rx="1" fill="var(--accent)" opacity="0.5"/><rect x="7" y="20" width="9" height="2" rx="1" fill="var(--accent2)" opacity="0.6"/><circle cx="22" cy="7" r="2.5" fill="var(--accent3)" opacity="0.8"/></svg></div>
               <div class="feature-title">Session Summary</div>
               <div class="feature-desc">Every session ends with an AI-generated synthesis — a real deliverable you can act on.</div>
             </div>
             <div class="feature-card">
-              <div class="feature-icon">🚀</div>
+              <div class="feature-icon"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28"><circle cx="9" cy="7" r="2.5" stroke="var(--accent)" stroke-width="1.5"/><circle cx="21" cy="7" r="2.5" stroke="var(--accent)" stroke-width="1.5" opacity="0.5"/><circle cx="5" cy="18" r="2.5" stroke="var(--accent2)" stroke-width="1.5" opacity="0.5"/><circle cx="16" cy="18" r="2.5" stroke="var(--accent)" stroke-width="1.5" opacity="0.5"/><line x1="9" y1="7" x2="21" y2="7" stroke="var(--border)" stroke-width="1.5"/><line x1="9" y1="7" x2="5" y2="18" stroke="var(--border)" stroke-width="1.5"/><line x1="9" y1="7" x2="16" y2="18" stroke="var(--border)" stroke-width="1.5"/><circle cx="25" cy="22" r="3.5" fill="var(--accent3)" opacity="0.8"/></svg></div>
               <div class="feature-title">Built for scale</div>
               <div class="feature-desc">Works equally well for a team of 5 or a conference of 500. Designed to grow with you.</div>
             </div>
@@ -1058,6 +1167,31 @@
     currentRoom = null; slides = []; currentSlideIndex = 0
     allResponses = []; allSessionResponses = {}
     showScreen('home')
+  }
+
+  // ---- TAGLINE ANIMATION ----
+  ;(function() {
+    let current = 0
+    function cycleTagline() {
+      const items = document.querySelectorAll('.tagline-item')
+      if (!items.length) return
+      items[current].classList.remove('active')
+      items[current].classList.add('exit')
+      setTimeout(() => items[current].classList.remove('exit'), 600)
+      current = (current + 1) % items.length
+      items[current].classList.add('active')
+    }
+    setTimeout(() => setInterval(cycleTagline, 2800), 2800)
+  })()
+
+  // ---- SESSION TOKEN (limit responses per device) ----
+  function getSessionToken() {
+    let token = localStorage.getItem('agora_token')
+    if (!token) {
+      token = 'usr_' + Math.random().toString(36).substring(2, 18)
+      localStorage.setItem('agora_token', token)
+    }
+    return token
   }
 
   function toggleTheme() {
@@ -1788,7 +1922,17 @@ Analyse both sides. Return JSON only:
       return
     }
 
-    const { error } = await db.from('responses').insert({ room_id: currentRoom.id, content: text, slide_index: currentSlideIndex })
+    // Check if already submitted for this question
+    const token = getSessionToken()
+    const submittedKey = `submitted_${currentRoom.id}_${currentSlideIndex}`
+    const alreadySubmitted = localStorage.getItem(submittedKey)
+    if (alreadySubmitted) {
+      showToast('You have already submitted a response for this question.')
+      return
+    }
+
+    const { error } = await db.from('responses').insert({ room_id: currentRoom.id, content: text, slide_index: currentSlideIndex, participant_token: token })
+    if (!error) localStorage.setItem(submittedKey, '1')
     if (error) { showToast('Error submitting.'); return }
     const list = document.getElementById('submitted-list')
     const item = document.createElement('div')
