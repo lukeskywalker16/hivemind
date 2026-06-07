@@ -233,6 +233,7 @@
     .slide-type-icon svg { width: 100%; height: 100%; }
     .slide-num-badge { font-size: 0.72rem; color: var(--accent); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
     .slide-delete-btn { background: transparent; border: none; color: var(--muted); cursor: pointer; padding: 0.3rem; border-radius: 6px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+    .slide-limit-row { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
     .slide-delete-btn:hover { color: var(--accent2); background: rgba(255,106,154,0.1); }
 
     @media (max-width: 768px) {
@@ -249,6 +250,94 @@
     .slide-num-badge { font-size: 0.72rem; color: var(--accent); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
     .add-slide-btn { display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: transparent; border: 1px dashed var(--border); border-radius: var(--radius); padding: 0.7rem; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; width: 100%; }
     .add-slide-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* SESSION THEMES */
+    .theme-selector { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+    .theme-btn { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: all 0.2s; position: relative; }
+    .theme-btn:hover { transform: scale(1.15); }
+    .theme-btn.active { border-color: white; box-shadow: 0 0 0 2px var(--accent); }
+    .theme-btn-default { background: linear-gradient(135deg, #5b4fff, #ffb020); }
+    .theme-btn-boardroom { background: linear-gradient(135deg, #1a2744, #4a6fa5); }
+    .theme-btn-nature { background: linear-gradient(135deg, #1a3a2a, #4caf6a); }
+    .theme-btn-space { background: linear-gradient(135deg, #0a0a1a, #9b4dca); }
+    .theme-btn-sunrise { background: linear-gradient(135deg, #ff6b2b, #ffd700); }
+    .theme-btn-blueprint { background: linear-gradient(135deg, #0a2a3a, #0099cc); }
+
+    /* THEME: DEFAULT - already styled via :root */
+
+    /* THEME: BOARDROOM */
+    .theme-boardroom #host-view { background: #0d1525; }
+    .theme-boardroom .slide-display::before { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(74,111,165,0.04) 60px, rgba(74,111,165,0.04) 61px), repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(74,111,165,0.04) 60px, rgba(74,111,165,0.04) 61px); pointer-events: none; z-index: 0; }
+    .theme-boardroom .slide-display { position: relative; }
+    .theme-boardroom .slide-display > * { position: relative; z-index: 1; }
+    .theme-boardroom .slide-question-text { color: #e8ecf4; }
+    .theme-boardroom .insight-panel { background: rgba(26,39,68,0.8); border-color: rgba(74,111,165,0.3); }
+    .theme-boardroom .cluster-card { background: rgba(26,39,68,0.8); border-color: rgba(74,111,165,0.2); }
+    .theme-boardroom .host-bottom-bar { background: rgba(13,21,37,0.97); border-color: rgba(74,111,165,0.3); }
+
+    /* THEME: NATURE */
+    .theme-nature #host-view { background: #0d1f14; }
+    .theme-nature .slide-display::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse at 0% 100%, rgba(76,175,106,0.08) 0%, transparent 60%), radial-gradient(ellipse at 100% 0%, rgba(76,175,106,0.05) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+    .theme-nature .slide-display::after { content: ''; position: fixed; bottom: 60px; left: 0; right: 0; height: 120px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120'%3E%3Cpath fill='rgba(76,175,106,0.06)' d='M0 60 Q180 0 360 60 Q540 120 720 60 Q900 0 1080 60 Q1260 120 1440 60 L1440 120 L0 120Z'/%3E%3C/svg%3E") center/cover no-repeat; pointer-events: none; z-index: 0; }
+    .theme-nature .slide-display { position: relative; }
+    .theme-nature .slide-display > * { position: relative; z-index: 1; }
+    .theme-nature .slide-question-text { color: #e8f5e9; }
+    .theme-nature .insight-panel { background: rgba(13,31,20,0.85); border-color: rgba(76,175,106,0.25); }
+    .theme-nature .cluster-card { background: rgba(13,31,20,0.85); border-color: rgba(76,175,106,0.2); }
+    .theme-nature .host-bottom-bar { background: rgba(13,21,14,0.97); border-color: rgba(76,175,106,0.3); }
+    .theme-nature .slide-eyebrow { color: #4caf6a; }
+    .theme-nature .cluster-name { color: #4caf6a; }
+
+    /* THEME: SPACE */
+    .theme-space #host-view { background: #05050f; }
+    .theme-space .slide-display::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse at 30% 40%, rgba(155,77,202,0.12) 0%, transparent 50%), radial-gradient(ellipse at 70% 60%, rgba(91,79,255,0.1) 0%, transparent 50%); pointer-events: none; z-index: 0; }
+    .theme-space .slide-display::after { content: ''; position: fixed; inset: 0; background-image: radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.4) 0%, transparent 100%), radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.3) 0%, transparent 100%), radial-gradient(1px 1px at 60% 20%, rgba(255,255,255,0.5) 0%, transparent 100%), radial-gradient(1px 1px at 80% 80%, rgba(255,255,255,0.3) 0%, transparent 100%), radial-gradient(1px 1px at 10% 60%, rgba(255,255,255,0.4) 0%, transparent 100%), radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.3) 0%, transparent 100%), radial-gradient(2px 2px at 50% 50%, rgba(155,77,202,0.6) 0%, transparent 100%), radial-gradient(1.5px 1.5px at 70% 10%, rgba(91,79,255,0.5) 0%, transparent 100%); pointer-events: none; z-index: 0; }
+    .theme-space .slide-display { position: relative; }
+    .theme-space .slide-display > * { position: relative; z-index: 1; }
+    .theme-space .slide-question-text { background: linear-gradient(135deg, #fff, #9b4dca); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .theme-space .insight-panel { background: rgba(5,5,15,0.85); border-color: rgba(155,77,202,0.3); }
+    .theme-space .insight-panel.highlight { border-color: rgba(155,77,202,0.5); background: linear-gradient(135deg, rgba(155,77,202,0.08), rgba(91,79,255,0.05)); }
+    .theme-space .cluster-card { background: rgba(5,5,15,0.85); border-color: rgba(155,77,202,0.2); }
+    .theme-space .cluster-card.top { border-color: rgba(155,77,202,0.4); }
+    .theme-space .host-bottom-bar { background: rgba(5,5,15,0.97); border-color: rgba(155,77,202,0.3); }
+    .theme-space .slide-eyebrow { color: #9b4dca; }
+    .theme-space .cluster-name { color: #9b4dca; }
+    .theme-space .ai-badge { background: rgba(155,77,202,0.15); border-color: rgba(155,77,202,0.3); color: #9b4dca; }
+
+    /* THEME: SUNRISE */
+    .theme-sunrise #host-view { background: #140a00; }
+    .theme-sunrise .slide-display::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse at 50% 100%, rgba(255,107,43,0.2) 0%, rgba(255,176,32,0.08) 40%, transparent 70%); pointer-events: none; z-index: 0; }
+    .theme-sunrise .slide-display::after { content: ''; position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%); width: 800px; height: 400px; background: radial-gradient(ellipse, rgba(255,176,32,0.06) 0%, transparent 70%); pointer-events: none; z-index: 0; border-radius: 50%; }
+    .theme-sunrise .slide-display { position: relative; }
+    .theme-sunrise .slide-display > * { position: relative; z-index: 1; }
+    .theme-sunrise .slide-question-text { background: linear-gradient(135deg, #fff5e0, #ffb020); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .theme-sunrise .insight-panel { background: rgba(20,10,0,0.85); border-color: rgba(255,176,32,0.25); }
+    .theme-sunrise .insight-panel.highlight { border-color: rgba(255,176,32,0.4); background: linear-gradient(135deg, rgba(255,176,32,0.08), rgba(255,107,43,0.05)); }
+    .theme-sunrise .cluster-card { background: rgba(20,10,0,0.85); border-color: rgba(255,176,32,0.2); }
+    .theme-sunrise .cluster-card.top { border-color: rgba(255,176,32,0.4); }
+    .theme-sunrise .host-bottom-bar { background: rgba(20,10,0,0.97); border-color: rgba(255,176,32,0.3); }
+    .theme-sunrise .slide-eyebrow { color: #ffb020; }
+    .theme-sunrise .cluster-name { color: #ffb020; }
+    .theme-sunrise .live-dot { background: #ffb020; }
+    .theme-sunrise .room-code-text { color: #ffb020; }
+    .theme-sunrise .big-code { color: #ffb020; }
+
+    /* THEME: BLUEPRINT */
+    .theme-blueprint #host-view { background: #051520; }
+    .theme-blueprint .slide-display::before { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(0,153,204,0.06) 40px, rgba(0,153,204,0.06) 41px), repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(0,153,204,0.06) 40px, rgba(0,153,204,0.06) 41px); pointer-events: none; z-index: 0; }
+    .theme-blueprint .slide-display { position: relative; }
+    .theme-blueprint .slide-display > * { position: relative; z-index: 1; }
+    .theme-blueprint .slide-question-text { color: #e0f4ff; font-family: 'DM Sans', sans-serif; letter-spacing: 0.02em; }
+    .theme-blueprint .insight-panel { background: rgba(5,21,32,0.9); border-color: rgba(0,153,204,0.3); }
+    .theme-blueprint .insight-panel.highlight { border-color: rgba(0,153,204,0.5); background: linear-gradient(135deg, rgba(0,153,204,0.08), rgba(5,21,32,0.9)); }
+    .theme-blueprint .cluster-card { background: rgba(5,21,32,0.9); border-color: rgba(0,153,204,0.2); }
+    .theme-blueprint .cluster-card.top { border-color: rgba(0,153,204,0.4); }
+    .theme-blueprint .host-bottom-bar { background: rgba(5,21,32,0.97); border-color: rgba(0,153,204,0.4); }
+    .theme-blueprint .slide-eyebrow { color: #0099cc; }
+    .theme-blueprint .cluster-name { color: #0099cc; }
+    .theme-blueprint .ai-badge { background: rgba(0,153,204,0.15); border-color: rgba(0,153,204,0.3); color: #0099cc; }
+    .theme-blueprint .live-dot { background: #0099cc; }
+    .theme-blueprint .big-code { color: #0099cc; }
 
     /* HOST VIEW */
     #host-view { display: none; flex-direction: column; min-height: calc(100vh - 57px); }
@@ -927,6 +1016,16 @@
               </button>
             </div>
             <input type="text" placeholder="Ask your audience something..." class="slide-question-input"/>
+              <div class="slide-limit-row">
+                <label style="text-transform:none;letter-spacing:0;font-size:0.8rem;color:var(--muted);">Max responses per participant</label>
+                <select class="slide-limit" style="width:auto;padding:0.4rem 0.6rem;font-size:0.82rem;">
+                  <option value="1">1 response</option>
+                  <option value="2">2 responses</option>
+                  <option value="3">3 responses</option>
+                  <option value="5">5 responses</option>
+                  <option value="0">Unlimited</option>
+                </select>
+              </div>
           </div>
         </div>
         <div id="create-error" class="error-msg">Please add at least one question.</div>
@@ -1005,6 +1104,14 @@
           <div class="slide-question-text" id="slide-question-display">—</div>
         </div>
         <div class="slide-controls">
+          <div class="theme-selector" title="Session theme">
+            <button class="theme-btn theme-btn-default active" onclick="setTheme('default', this)" title="Default"></button>
+            <button class="theme-btn theme-btn-boardroom" onclick="setTheme('boardroom', this)" title="Boardroom"></button>
+            <button class="theme-btn theme-btn-nature" onclick="setTheme('nature', this)" title="Nature"></button>
+            <button class="theme-btn theme-btn-space" onclick="setTheme('space', this)" title="Space"></button>
+            <button class="theme-btn theme-btn-sunrise" onclick="setTheme('sunrise', this)" title="Sunrise"></button>
+            <button class="theme-btn theme-btn-blueprint" onclick="setTheme('blueprint', this)" title="Blueprint"></button>
+          </div>
           <button class="btn btn-ghost btn-sm" onclick="prevSlide()">← Prev</button>
           <button class="btn btn-secondary btn-sm" onclick="nextSlide()">Next →</button>
           <button class="btn btn-glow-pink btn-sm" onclick="endSession()">End Session</button>
@@ -1194,6 +1301,22 @@
     return token
   }
 
+  // ---- SESSION THEMES ----
+  let currentTheme = 'default'
+  function setTheme(theme, btn) {
+    const hostView = document.getElementById('host-view')
+    // Remove old theme class
+    const themes = ['default','boardroom','nature','space','sunrise','blueprint']
+    themes.forEach(t => hostView.classList.remove('theme-' + t))
+    // Add new theme
+    if (theme !== 'default') hostView.classList.add('theme-' + theme)
+    currentTheme = theme
+    // Update active button
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'))
+    if (btn) btn.classList.add('active')
+    showToast(theme.charAt(0).toUpperCase() + theme.slice(1) + ' theme applied')
+  }
+
   function toggleTheme() {
     const body = document.body
     const isDark = !body.classList.contains('light-mode')
@@ -1298,7 +1421,17 @@
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="14" height="14"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
-      <input type="text" placeholder="Ask your audience something..." class="slide-question-input"/>`
+      <input type="text" placeholder="Ask your audience something..." class="slide-question-input"/>
+      <div class="slide-limit-row">
+        <label style="text-transform:none;letter-spacing:0;font-size:0.8rem;color:var(--muted);">Max responses per participant</label>
+        <select class="slide-limit" style="width:auto;padding:0.4rem 0.6rem;font-size:0.82rem;">
+          <option value="1">1 response</option>
+          <option value="2">2 responses</option>
+          <option value="3">3 responses</option>
+          <option value="5">5 responses</option>
+          <option value="0">Unlimited</option>
+        </select>
+      </div>`
     builder.appendChild(div)
     div.querySelector('.slide-question-input').focus()
     showToast(`${cfg.label} question added`)
@@ -1319,7 +1452,8 @@
     const errEl = document.getElementById('create-error')
     const questions = Array.from(document.querySelectorAll('.slide-item')).map(item => ({
       question: item.querySelector('.slide-question-input').value.trim(),
-      type: item.dataset.type || 'cluster'
+      type: item.dataset.type || 'cluster',
+      limit: parseInt(item.querySelector('.slide-limit')?.value || '1')
     })).filter(s => s.question)
     if (questions.length === 0) { errEl.style.display = 'block'; return }
     errEl.style.display = 'none'
@@ -1883,6 +2017,42 @@ Analyse both sides. Return JSON only:
     
     const dotsEl = document.getElementById('p-progress')
     dotsEl.innerHTML = slides.map((_, i) => `<div class="p-progress-dot ${i < currentSlideIndex ? 'done' : i === currentSlideIndex ? 'active' : ''}"></div>`).join('')
+
+    // Show response counter
+    const limit = slide.limit || 1
+    const countKey = `count_${currentRoom.id}_${currentSlideIndex}`
+    const currentCount = parseInt(localStorage.getItem(countKey) || '0')
+    updateResponseCounter(currentCount, limit)
+  }
+
+  function updateResponseCounter(count, limit) {
+    let counterEl = document.getElementById('response-counter')
+    if (!counterEl) {
+      counterEl = document.createElement('div')
+      counterEl.id = 'response-counter'
+      counterEl.style.cssText = 'font-size:0.78rem;color:var(--muted);text-align:center;letter-spacing:0.05em;'
+      const formCard = document.querySelector('#participant-view .form-card')
+      if (formCard) formCard.appendChild(counterEl)
+    }
+    if (limit === 0) {
+      counterEl.textContent = `${count} response${count !== 1 ? 's' : ''} submitted`
+    } else {
+      counterEl.textContent = `Response ${Math.min(count + 1, limit)} of ${limit}`
+      if (count >= limit) {
+        counterEl.textContent = `All ${limit} response${limit !== 1 ? 's' : ''} submitted ✓`
+        counterEl.style.color = 'var(--accent3)'
+        // Hide input
+        const input = document.getElementById('response-input')
+        const btn = input?.nextElementSibling
+        if (input) input.style.display = 'none'
+        if (btn) btn.style.display = 'none'
+      } else {
+        const input = document.getElementById('response-input')
+        const btn = input?.nextElementSibling
+        if (input) input.style.display = ''
+        if (btn) btn.style.display = ''
+      }
+    }
   }
 
   function listenForSlideChanges() {
@@ -1922,17 +2092,23 @@ Analyse both sides. Return JSON only:
       return
     }
 
-    // Check if already submitted for this question
+    // Check response limit for this question
     const token = getSessionToken()
-    const submittedKey = `submitted_${currentRoom.id}_${currentSlideIndex}`
-    const alreadySubmitted = localStorage.getItem(submittedKey)
-    if (alreadySubmitted) {
-      showToast('You have already submitted a response for this question.')
+    const limit = slide.limit || 1
+    const countKey = `count_${currentRoom.id}_${currentSlideIndex}`
+    const currentCount = parseInt(localStorage.getItem(countKey) || '0')
+
+    if (limit > 0 && currentCount >= limit) {
+      showToast(limit === 1 ? 'You have already submitted a response for this question.' : `You have used all ${limit} responses for this question.`)
       return
     }
 
     const { error } = await db.from('responses').insert({ room_id: currentRoom.id, content: text, slide_index: currentSlideIndex, participant_token: token })
-    if (!error) localStorage.setItem(submittedKey, '1')
+    if (!error) {
+      const newCount = currentCount + 1
+      localStorage.setItem(countKey, newCount)
+      updateResponseCounter(newCount, limit)
+    }
     if (error) { showToast('Error submitting.'); return }
     const list = document.getElementById('submitted-list')
     const item = document.createElement('div')
@@ -2066,7 +2242,13 @@ Analyse both sides. Return JSON only:
       raf=requestAnimationFrame(loop)
     }
 
-    window.addEventListener('resize', () => { if(canvas) { resize() } })
+    window.addEventListener('resize', () => {
+      if(canvas) {
+        resize()
+        // Reinitialise nodes to fill new size
+        makeNodes()
+      }
+    })
     // Start after intro finishes
     setTimeout(setup, 3400)
   })()
